@@ -6,13 +6,15 @@ import {BrowserRouter} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import store from './redux/store/store';
 
+const Root = ({store, children}) => (
+  <Provider store={store}>{children}</Provider>
+);
+
 ReactDOM.render(
-  <React.StrictMode>
+  <Root store={store}>
     <BrowserRouter>
-      <Provider store={store}>
-        <App />
-      </Provider>
+      <App />
     </BrowserRouter>
-  </React.StrictMode>,
+  </Root>,
   document.getElementById('root')
 );

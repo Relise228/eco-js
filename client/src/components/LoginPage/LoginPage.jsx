@@ -1,29 +1,53 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import './LoginPage.sass';
 
 import {Form, Input, Button, Checkbox} from 'antd';
 import {Redirect} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
-import {selectIsAuth, setAuth} from '../../redux/features/authSlice';
+import {
+  loginUser,
+  selectErrorLog,
+  selectIsAuth,
+  selectLoginString,
+  selectPasswordString,
+  setAuth,
+  setLogString,
+  setPassString,
+} from '../../redux/features/authSlice';
 
-const LoginPage = React.memo(() => {
+const layout = {
+  labelCol: {span: 8},
+  wrapperCol: {span: 16},
+};
+const tailLayout = {
+  wrapperCol: {offset: 8, span: 16},
+};
+
+const LoginPage = React.memo(({history}) => {
   const auth = useSelector(selectIsAuth);
+  const log = useSelector(selectLoginString);
+  const pass = useSelector(selectPasswordString);
+  const errorLog = useSelector(selectErrorLog);
 
   const dispatch = useDispatch();
 
-  const layout = {
-    labelCol: {span: 8},
-    wrapperCol: {span: 16},
+  useEffect(() => {
+    if (sessionStorage.getItem('token')) {
+      dispatch(setAuth(true));
+    }
+  }, []);
+
+  const onChangeLog = (e) => {
+    dispatch(setLogString(e.currentTarget.value));
   };
-  const tailLayout = {
-    wrapperCol: {offset: 8, span: 16},
+
+  const onChangePass = (e) => {
+    dispatch(setPassString(e.currentTarget.value));
   };
 
   const onFinish = (values) => {
-    console.log('Success:', values);
-    if (values.username && values.password) {
-      dispatch(setAuth(true));
-    }
+    dispatch(loginUser(values.login, values.password));
+    console.log(errorLog);
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -39,12 +63,19 @@ const LoginPage = React.memo(() => {
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
       >
+        {errorLog && (
+          <div
+            style={{textAlign: 'center', color: 'red', marginBottom: '30px'}}
+          >
+            {errorLog}
+          </div>
+        )}
         <Form.Item
           label='Username'
-          name='username'
+          name='login'
           rules={[{required: true, message: 'Please input your username!'}]}
         >
-          <Input />
+          <Input value={log} onChange={onChangeLog} />
         </Form.Item>
 
         <Form.Item
@@ -52,7 +83,7 @@ const LoginPage = React.memo(() => {
           name='password'
           rules={[{required: true, message: 'Please input your password!'}]}
         >
-          <Input.Password />
+          <Input.Password value={pass} onChange={onChangePass} />
         </Form.Item>
 
         <Form.Item {...tailLayout}>
