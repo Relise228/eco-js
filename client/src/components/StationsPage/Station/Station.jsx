@@ -1,13 +1,16 @@
 import React from 'react';
+import L from 'leaflet';
+
 import s from './Station.module.sass';
+
 import {MapContainer, TileLayer, Marker, Popup} from 'react-leaflet';
+import {Link} from 'react-router-dom';
+
 import 'leaflet/dist/leaflet.css';
 import Pin from 'leaflet/dist/images/marker-icon-2x.png';
 import Shadow from 'leaflet/dist/images/marker-shadow.png';
 import SaveEcoBot from '../../../img/SaveEcoBot.png';
 import OwnImg from '../../../img/own.png';
-import L from 'leaflet';
-import {stationsAPI} from '../../../api/api';
 
 function Station({station}) {
   const dot = [station.Latitude, station.Longitude];
@@ -61,6 +64,9 @@ function Station({station}) {
             />
           </div>
           <div className={s.stationInfoValues}>{station?.units?.join(',')}</div>
+          <div className={s.stationInfoView}>
+            <Link to={`/station/${station.ID_Station}`}>View</Link>
+          </div>
         </div>
       </div>
     </div>

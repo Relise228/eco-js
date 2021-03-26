@@ -9,6 +9,7 @@ import {Link, Redirect, Route, Switch} from 'react-router-dom';
 import {useSelector} from 'react-redux';
 import {selectIsAuth} from '../../redux/features/authSlice';
 import StationsPage from '../StationsPage/StationsPage';
+import StationPage from '../StationPage/StationPage';
 
 const {SubMenu} = Menu;
 const {Header, Content, Sider} = Layout;
@@ -63,7 +64,8 @@ const LayoutApp = () => {
             }}
           >
             <Switch>
-              <Route path='/' component={StationsPage} />
+              <Route exact path='/' component={StationsPage} />
+              <Route exact path='/station/:id' component={StationPage} />
             </Switch>
           </Content>
         </Layout>

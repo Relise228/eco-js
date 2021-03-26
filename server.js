@@ -5,13 +5,16 @@ const request = require('request');
 const app = express();
 
 // Init Middleware
-app.use(express.json({ extended: false }));
+app.use(express.json({extended: false}));
 app.use(express.static(__dirname + '/public'));
 
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', value="Origin, Content-Type, x-auth-token");
-    next();
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header(
+    'Access-Control-Allow-Headers',
+    (value = 'Origin, Content-Type, x-auth-token')
+  );
+  next();
 });
 
 // Define Routes
@@ -20,12 +23,12 @@ app.use('/api/station', require('./routes/api/station'));
 app.use('/api/measurement', require('./routes/api/measurement'));
 
 // Serve static assets in production
-if(process.env.NODE_ENV === 'production') {
-    app.use(express.static('client/build'));
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static('client/build'));
 
-    app.get('*', (req, res) => {
-        res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
-    })
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  });
 }
 
 const PORT = process.env.PORT || 4000;

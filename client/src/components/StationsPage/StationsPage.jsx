@@ -5,7 +5,9 @@ import {useDispatch, useSelector} from 'react-redux';
 import {
   getStations,
   selectAllStations,
+  selectLoading,
 } from '../../redux/features/stationsSlice';
+import Loader from '../Loader/Loader';
 import Station from './Station/Station';
 import s from './StationsPage.module.sass';
 
@@ -17,6 +19,7 @@ function StationsPage() {
   const [sortValue, setSortValue] = useState('idUp');
 
   const stations = useSelector(selectAllStations);
+  const loading = useSelector(selectLoading);
   console.log(stations);
 
   const dispatch = useDispatch();
@@ -43,6 +46,8 @@ function StationsPage() {
       : `?order=${value}`;
     dispatch(getStations(string));
   }
+
+  if (loading) return <Loader />;
 
   return (
     <div className={s.stations}>

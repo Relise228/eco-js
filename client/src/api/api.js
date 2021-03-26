@@ -36,4 +36,28 @@ export const stationsAPI = {
         }
       )
       .then((response) => response.data),
+  getStationFullUnits: (id) =>
+    instance
+      .post(
+        'api/station/unitsFull/',
+        {ID_Station: id},
+        {
+          headers: {
+            'x-auth-token': sessionStorage.getItem('token'),
+          },
+        }
+      )
+      .then((response) => response.data),
+  getStationOptimal: (idUnit) =>
+    instance
+      .post(
+        'api/measurement/oprimalValue',
+        {ID_Measured_Unit: idUnit},
+        {
+          headers: {
+            'x-auth-token': sessionStorage.getItem('token'),
+          },
+        }
+      )
+      .then((response) => response.data),
 };
