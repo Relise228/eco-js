@@ -5,7 +5,6 @@ const instance = axios.create({
   baseURL: 'http://localhost:4000/',
   headers: {
     'Content-type': 'application/json',
-    'x-auth-token': sessionStorage.getItem('token'),
   },
 });
 
@@ -18,9 +17,23 @@ export const userAPI = {
 
 export const stationsAPI = {
   getAllStations: (string) =>
-    instance.get(`api/station/${string}`).then((response) => response.data),
+    instance
+      .get(`api/station/${string}`, {
+        headers: {
+          'x-auth-token': sessionStorage.getItem('token'),
+        },
+      })
+      .then((response) => response.data),
   getStationsUnit: (id) =>
     instance
-      .post('api/station/units/', {ID_Station: id})
+      .post(
+        'api/station/units/',
+        {ID_Station: id},
+        {
+          headers: {
+            'x-auth-token': sessionStorage.getItem('token'),
+          },
+        }
+      )
       .then((response) => response.data),
 };

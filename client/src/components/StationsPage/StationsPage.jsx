@@ -17,6 +17,7 @@ function StationsPage() {
   const [sortValue, setSortValue] = useState('idUp');
 
   const stations = useSelector(selectAllStations);
+  console.log(stations);
 
   const dispatch = useDispatch();
 
@@ -71,9 +72,7 @@ function StationsPage() {
         </div>
       </div>
       <div className={s.stationsWrapper}>
-        {stations.map((s) => (
-          <Station station={s} />
-        ))}
+        {stations && stations.map((s) => <Station station={s} />)}
       </div>
     </div>
   );
