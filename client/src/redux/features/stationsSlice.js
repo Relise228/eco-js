@@ -1,5 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {stationsAPI} from '../../api/api';
+import {formatChartObject} from '../../util/util';
 
 const initialState = {
   allStations: [],
@@ -65,6 +66,16 @@ export const stationsSlice = createSlice({
         currentStation: {...state.currentStation, measurements: action.payload},
       };
     },
+    setMeasurementsFormated: (state, action) => {
+      console.log(action.payload);
+      return {
+        ...state,
+        currentStation: {
+          ...state.currentStation,
+          measurementsFormated: action.payload,
+        },
+      };
+    },
   },
 });
 
@@ -76,6 +87,7 @@ export const {
   setCurrentStationOptimal,
   setLoading,
   setMeasurements,
+  setMeasurementsFormated,
 } = stationsSlice.actions;
 
 //@Thunks
@@ -99,7 +111,7 @@ export const setCurrentStationThunk = (id, DateFrom, DateTo) => async (
   await dispatch(setCurrentStation(id));
   let data = await stationsAPI.getStationFullUnits(id);
   await dispatch(setStationFullUnits(data));
-  const state = getState();
+  let state = getState();
   state.stations.currentStation.fullUnits.map(async (u) => {
     let optimal = await stationsAPI.getStationOptimal(u.ID_Measured_Unit);
     await dispatch(setCurrentStationOptimal(optimal));
@@ -110,7 +122,36 @@ export const setCurrentStationThunk = (id, DateFrom, DateTo) => async (
     state.stations.currentStation.ID_Station,
     state.stations.currentStation.fullUnits[0].ID_Measured_Unit
   );
-  dispatch(setMeasurements(measurements));
+  await dispatch(setMeasurements(measurements));
+  state = getState();
+  dispatch(
+    setMeasurementsFormated(
+      formatChartObject(state.stations.currentStation.measurements)
+    )
+  );
+
+  dispatch(setLoading(false));
+};
+
+export const setCurrentStationMeasurements = (DateFrom, DateTo) => async (
+  dispatch,
+  getState
+) => {
+  let state = getState();
+  let measurements = await stationsAPI.getStationMeasurements(
+    DateFrom,
+    DateTo,
+    state.stations.currentStation.ID_Station,
+    state.stations.currentStation.fullUnits[0].ID_Measured_Unit
+  );
+  await dispatch(setMeasurements(measurements));
+  state = getState();
+  dispatch(
+    setMeasurementsFormated(
+      formatChartObject(state.stations.currentStation.measurements)
+    )
+  );
+
   dispatch(setLoading(false));
 };
 
