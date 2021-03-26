@@ -26,6 +26,13 @@ function Station({station}) {
     popupAnchor: [-3, -50], // point from which the popup should open relative to the iconAnchor
   });
 
+  const style =
+    station.Status === 'enabled'
+      ? {
+          backgroundColor: 'rgb(125, 238, 20)',
+        }
+      : {};
+
   return (
     <div className={s.station}>
       <div className={s.stationMap}>
@@ -47,14 +54,7 @@ function Station({station}) {
             ID Station: {station.ID_Station}
           </div>
           <div className={s.stationInfoName}>{station.Name}</div>
-          <div
-            className={s.stationInfoStatus}
-            style={
-              station.Status === 'enabled' && {
-                backgroundColor: 'rgb(125, 238, 20)',
-              }
-            }
-          ></div>
+          <div className={s.stationInfoStatus} style={style}></div>
         </div>
         <div className={s.stationInfoBottom}>
           <div className={s.stationInfoSave}>

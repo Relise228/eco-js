@@ -20,7 +20,6 @@ function StationsPage() {
 
   const stations = useSelector(selectAllStations);
   const loading = useSelector(selectLoading);
-  console.log(stations);
 
   const dispatch = useDispatch();
 
@@ -77,7 +76,8 @@ function StationsPage() {
         </div>
       </div>
       <div className={s.stationsWrapper}>
-        {stations && stations.map((s) => <Station station={s} />)}
+        {stations &&
+          stations.map((s) => <Station key={s.ID_Station} station={s} />)}
       </div>
     </div>
   );

@@ -51,8 +51,25 @@ export const stationsAPI = {
   getStationOptimal: (idUnit) =>
     instance
       .post(
-        'api/measurement/oprimalValue',
+        'api/measurement/optimalValue',
         {ID_Measured_Unit: idUnit},
+        {
+          headers: {
+            'x-auth-token': sessionStorage.getItem('token'),
+          },
+        }
+      )
+      .then((response) => response.data),
+  getStationMeasurements: (DateFrom, DateTo, ID_Station, ID_Measured_Unit) =>
+    instance
+      .post(
+        'api/station/measurements',
+        {
+          DateFrom: DateFrom,
+          DateTo: DateTo,
+          ID_Station: ID_Station,
+          ID_Measured_Unit: ID_Measured_Unit,
+        },
         {
           headers: {
             'x-auth-token': sessionStorage.getItem('token'),

@@ -42,11 +42,14 @@ export const stationsSlice = createSlice({
     },
 
     setCurrentStationOptimal: (state, action) => {
+      const optimal = state.currentStation.optimal
+        ? [...state.currentStation.optimal, action.payload]
+        : [action.payload];
       return {
         ...state,
         currentStation: {
           ...state.currentStation,
-          optimal: [...state.currentStation.optimal, action.payload],
+          optimal,
         },
       };
     },
@@ -54,6 +57,12 @@ export const stationsSlice = createSlice({
       return {
         ...state,
         loading: action.payload,
+      };
+    },
+    setMeasurements: (state, action) => {
+      return {
+        ...state,
+        currentStation: {...state.currentStation, measurements: action.payload},
       };
     },
   },
@@ -66,6 +75,7 @@ export const {
   setStationFullUnits,
   setCurrentStationOptimal,
   setLoading,
+  setMeasurements,
 } = stationsSlice.actions;
 
 //@Thunks
@@ -81,7 +91,10 @@ export const getStations = (string) => async (dispatch, getState) => {
   dispatch(setLoading(false));
 };
 
-export const setCurrentStationThunk = (id) => async (dispatch, getState) => {
+export const setCurrentStationThunk = (id, DateFrom, DateTo) => async (
+  dispatch,
+  getState
+) => {
   dispatch(setLoading(true));
   await dispatch(setCurrentStation(id));
   let data = await stationsAPI.getStationFullUnits(id);
@@ -89,14 +102,21 @@ export const setCurrentStationThunk = (id) => async (dispatch, getState) => {
   const state = getState();
   state.stations.currentStation.fullUnits.map(async (u) => {
     let optimal = await stationsAPI.getStationOptimal(u.ID_Measured_Unit);
-    console.log(optimal);
     await dispatch(setCurrentStationOptimal(optimal));
   });
+  let measurements = await stationsAPI.getStationMeasurements(
+    DateFrom,
+    DateTo,
+    state.stations.currentStation.ID_Station,
+    state.stations.currentStation.fullUnits[0].ID_Measured_Unit
+  );
+  dispatch(setMeasurements(measurements));
   dispatch(setLoading(false));
 };
 
 // @SELECTORS
 export const selectAllStations = (state) => state.stations.allStations;
 export const selectLoading = (state) => state.stations.loading;
+export const selectCurrentStation = (state) => state.stations.currentStation;
 
 export default stationsSlice.reducer;
