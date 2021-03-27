@@ -9,6 +9,5 @@ export const formatChartObject = (array) => {
       };
     }),
   ];
-  console.log(done);
   return done[0];
 };

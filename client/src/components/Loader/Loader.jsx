@@ -4,26 +4,26 @@ import './Loader.scss';
 function Loader() {
   return (
     <div className='loader-wrapper'>
-      <div class='boxes'>
-        <div class='box'>
+      <div className='boxes'>
+        <div className='box'>
           <div></div>
           <div></div>
           <div></div>
           <div></div>
         </div>
-        <div class='box'>
+        <div className='box'>
           <div></div>
           <div></div>
           <div></div>
           <div></div>
         </div>
-        <div class='box'>
+        <div className='box'>
           <div></div>
           <div></div>
           <div></div>
           <div></div>
         </div>
-        <div class='box'>
+        <div className='box'>
           <div></div>
           <div></div>
           <div></div>

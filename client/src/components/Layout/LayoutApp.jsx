@@ -33,7 +33,7 @@ const LayoutApp = () => {
           >
             <SubMenu key='sub1' icon={<RadarChartOutlined />} title='Stations'>
               <Menu.Item key='1'>
-                <Link to='/stations'>Overview</Link>
+                <Link to='/'>Overview</Link>
               </Menu.Item>
             </SubMenu>
             <SubMenu key='sub2' icon={<LaptopOutlined />} title='subnav 2'>

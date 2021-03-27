@@ -67,12 +67,37 @@ export const stationsSlice = createSlice({
       };
     },
     setMeasurementsFormated: (state, action) => {
-      console.log(action.payload);
       return {
         ...state,
         currentStation: {
           ...state.currentStation,
           measurementsFormated: action.payload,
+        },
+      };
+    },
+    setUnitInfo: (state) => {
+      return {
+        ...state,
+        currentStation: {
+          ...state.currentStation,
+          selectedUnitInfo: state.currentStation.fullUnits.filter(
+            (u) =>
+              u.ID_Measured_Unit === state.currentStation.selectedMeasuredId
+          ),
+
+          selectedUnitInfoOptimal: state.currentStation.optimal.filter(
+            (u) =>
+              u[0]?.ID_Measured_Unit === state.currentStation.selectedMeasuredId
+          ),
+        },
+      };
+    },
+    setSelectedMeasuredId: (state, action) => {
+      return {
+        ...state,
+        currentStation: {
+          ...state.currentStation,
+          selectedMeasuredId: action.payload,
         },
       };
     },
@@ -88,6 +113,8 @@ export const {
   setLoading,
   setMeasurements,
   setMeasurementsFormated,
+  setSelectedMeasuredId,
+  setUnitInfo,
 } = stationsSlice.actions;
 
 //@Thunks
@@ -103,11 +130,12 @@ export const getStations = (string) => async (dispatch, getState) => {
   dispatch(setLoading(false));
 };
 
-export const setCurrentStationThunk = (id, DateFrom, DateTo) => async (
-  dispatch,
-  getState
-) => {
-  dispatch(setLoading(true));
+export const setCurrentStationThunk = (
+  id,
+  DateFrom,
+  DateTo,
+  ID_Measured_Unit
+) => async (dispatch, getState) => {
   await dispatch(setCurrentStation(id));
   let data = await stationsAPI.getStationFullUnits(id);
   await dispatch(setStationFullUnits(data));
@@ -116,6 +144,7 @@ export const setCurrentStationThunk = (id, DateFrom, DateTo) => async (
     let optimal = await stationsAPI.getStationOptimal(u.ID_Measured_Unit);
     await dispatch(setCurrentStationOptimal(optimal));
   });
+
   let measurements = await stationsAPI.getStationMeasurements(
     DateFrom,
     DateTo,
@@ -124,25 +153,30 @@ export const setCurrentStationThunk = (id, DateFrom, DateTo) => async (
   );
   await dispatch(setMeasurements(measurements));
   state = getState();
-  dispatch(
+  await dispatch(
     setMeasurementsFormated(
       formatChartObject(state.stations.currentStation.measurements)
     )
   );
-
-  dispatch(setLoading(false));
+  await dispatch(
+    setSelectedMeasuredId(
+      state.stations.currentStation.fullUnits[0].ID_Measured_Unit
+    )
+  );
+  await dispatch(setUnitInfo());
 };
 
-export const setCurrentStationMeasurements = (DateFrom, DateTo) => async (
-  dispatch,
-  getState
-) => {
+export const setCurrentStationMeasurements = (
+  DateFrom,
+  DateTo,
+  ID_Measured_Unit
+) => async (dispatch, getState) => {
   let state = getState();
   let measurements = await stationsAPI.getStationMeasurements(
     DateFrom,
     DateTo,
     state.stations.currentStation.ID_Station,
-    state.stations.currentStation.fullUnits[0].ID_Measured_Unit
+    ID_Measured_Unit
   );
   await dispatch(setMeasurements(measurements));
   state = getState();
@@ -159,5 +193,9 @@ export const setCurrentStationMeasurements = (DateFrom, DateTo) => async (
 export const selectAllStations = (state) => state.stations.allStations;
 export const selectLoading = (state) => state.stations.loading;
 export const selectCurrentStation = (state) => state.stations.currentStation;
+export const selectSelectedUnitInfo = (state) =>
+  state.stations.currentStation.selectedUnitInfo;
+export const selectSelectedUnitInfoOptimal = (state) =>
+  state.stations.currentStation.selectedUnitInfoOptimal;
 
 export default stationsSlice.reducer;
