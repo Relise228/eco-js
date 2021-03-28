@@ -194,7 +194,7 @@ const StationPage = React.memo(({match}) => {
             ID Station: {station.ID_Station}
           </div>
           <div className={s.stationPageUnits}>
-            Units: {station.units?.join(',')}
+            Units: {station.units?.join(', ')}
           </div>
           <div className={s.stationPageType}>
             <img

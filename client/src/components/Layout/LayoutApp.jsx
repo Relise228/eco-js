@@ -20,12 +20,13 @@ const LayoutApp = () => {
 
   return (
     <Layout style={{minHeight: '100vh'}}>
-      <Header className='header'>
+      {/* <Header className='header'>
         <div className='logo' />
-      </Header>
+      </Header> */}
       <Layout>
-        <Sider width={200} className='site-layout-background'>
+        <Sider collapsible width={200} className='site-layout-background'>
           <Menu
+            theme='dark'
             mode='inline'
             defaultSelectedKeys={['1']}
             defaultOpenKeys={['sub1']}
