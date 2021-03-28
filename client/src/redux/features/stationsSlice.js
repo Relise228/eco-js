@@ -75,29 +75,29 @@ export const stationsSlice = createSlice({
         },
       };
     },
-    setUnitInfo: (state) => {
-      return {
-        ...state,
-        currentStation: {
-          ...state.currentStation,
-          selectedUnitInfo: state.currentStation.fullUnits.filter(
-            (u) =>
-              u.ID_Measured_Unit === state.currentStation.selectedMeasuredId
-          ),
-
-          selectedUnitInfoOptimal: state.currentStation.optimal.filter(
-            (u) =>
-              u[0]?.ID_Measured_Unit === state.currentStation.selectedMeasuredId
-          ),
-        },
-      };
-    },
     setSelectedMeasuredId: (state, action) => {
       return {
         ...state,
         currentStation: {
           ...state.currentStation,
           selectedMeasuredId: action.payload,
+        },
+      };
+    },
+    setUnitInfo: (state) => {
+      return {
+        ...state,
+        currentStation: {
+          ...state.currentStation,
+          selectedUnitInfo: state.currentStation.fullUnits?.filter(
+            (u) =>
+              u.ID_Measured_Unit === state.currentStation.selectedMeasuredId
+          ),
+
+          selectedUnitInfoOptimal: state.currentStation.optimal?.filter(
+            (u) =>
+              u[0]?.ID_Measured_Unit === state.currentStation.selectedMeasuredId
+          ),
         },
       };
     },
