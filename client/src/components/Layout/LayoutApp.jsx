@@ -3,6 +3,7 @@ import {
   RadarChartOutlined,
   LaptopOutlined,
   NotificationOutlined,
+  BarChartOutlined,
 } from '@ant-design/icons';
 import React, {useState} from 'react';
 import {Link, Redirect, Route, Switch} from 'react-router-dom';
@@ -10,6 +11,7 @@ import {useSelector} from 'react-redux';
 import {selectIsAuth} from '../../redux/features/authSlice';
 import StationsPage from '../StationsPage/StationsPage';
 import StationPage from '../StationPage/StationPage';
+import ComparePage from '../ComparePage/ComparePage';
 
 const {SubMenu} = Menu;
 const {Header, Content, Sider} = Layout;
@@ -35,6 +37,9 @@ const LayoutApp = () => {
             <SubMenu key='sub1' icon={<RadarChartOutlined />} title='Stations'>
               <Menu.Item key='1'>
                 <Link to='/'>Overview</Link>
+              </Menu.Item>
+              <Menu.Item key='2'>
+                <Link to='/compare/'>Compare</Link>
               </Menu.Item>
             </SubMenu>
             <SubMenu key='sub2' icon={<LaptopOutlined />} title='subnav 2'>
@@ -67,6 +72,7 @@ const LayoutApp = () => {
             <Switch>
               <Route exact path='/' component={StationsPage} />
               <Route exact path='/station/:id' component={StationPage} />
+              <Route exact path='/compare' component={ComparePage} />
             </Switch>
           </Content>
         </Layout>

@@ -1,6 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {stationsAPI} from '../../api/api';
-import {formatChartObject} from '../../util/util';
+import {formatChartObject, parseCommonUnits} from '../../util/util';
 
 const initialState = {
   allStations: [],
