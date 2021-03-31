@@ -4,6 +4,7 @@ import {Area, Line} from '@ant-design/charts';
 import {
   selectAllStations,
   selectLoading,
+  setCurrentPageIndex,
   setLoading,
 } from '../../redux/features/stationsSlice';
 import s from './ComparePage.module.sass';
@@ -44,6 +45,7 @@ function ComparePage() {
   console.log(first, second);
 
   useEffect(async () => {
+    dispatch(setCurrentPageIndex(['2']));
     await dispatch(setCompareUnits(first.ID_Station, second.ID_Station));
     dispatch(
       setStationsMeasurements(

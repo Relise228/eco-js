@@ -6,6 +6,7 @@ import {
   getStations,
   selectAllStations,
   selectLoading,
+  setCurrentPageIndex,
 } from '../../redux/features/stationsSlice';
 import Loader from '../Loader/Loader';
 import Station from './Station/Station';
@@ -24,6 +25,7 @@ function StationsPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(setCurrentPageIndex(['1']));
     let string = searchValue
       ? `?searchString=${searchValue}&order=${sortValue}`
       : `?order=${sortValue}`;

@@ -13,6 +13,7 @@ import {
   setUnitInfo,
   selectSelectedUnitInfo,
   selectSelectedUnitInfoOptimal,
+  setCurrentPageIndex,
 } from '../../redux/features/stationsSlice';
 import Loader from '../Loader/Loader';
 import moment from 'moment';
@@ -38,6 +39,7 @@ const StationPage = React.memo(({match}) => {
 
   useEffect(async () => {
     dispatch(setLoading(true));
+    dispatch(setCurrentPageIndex(['1']));
     await dispatch(
       setCurrentStationThunk(
         match.params.id,

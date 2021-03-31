@@ -12,11 +12,14 @@ import {selectIsAuth} from '../../redux/features/authSlice';
 import StationsPage from '../StationsPage/StationsPage';
 import StationPage from '../StationPage/StationPage';
 import ComparePage from '../ComparePage/ComparePage';
+import MapPage from '../MapPage/MapPage';
+import {selectCurrentPageIndex} from '../../redux/features/stationsSlice';
 
 const {SubMenu} = Menu;
 const {Header, Content, Sider} = Layout;
 const LayoutApp = () => {
   const auth = useSelector(selectIsAuth);
+  const index = useSelector(selectCurrentPageIndex);
 
   if (!auth) return <Redirect to={'/login'} />;
 
@@ -30,7 +33,7 @@ const LayoutApp = () => {
           <Menu
             theme='dark'
             mode='inline'
-            defaultSelectedKeys={['1']}
+            selectedKeys={index}
             defaultOpenKeys={['sub1']}
             style={{height: '100%', borderRight: 0}}
           >
@@ -41,22 +44,9 @@ const LayoutApp = () => {
               <Menu.Item key='2'>
                 <Link to='/compare/'>Compare</Link>
               </Menu.Item>
-            </SubMenu>
-            <SubMenu key='sub2' icon={<LaptopOutlined />} title='subnav 2'>
-              <Menu.Item key='5'>option5</Menu.Item>
-              <Menu.Item key='6'>option6</Menu.Item>
-              <Menu.Item key='7'>option7</Menu.Item>
-              <Menu.Item key='8'>option8</Menu.Item>
-            </SubMenu>
-            <SubMenu
-              key='sub3'
-              icon={<NotificationOutlined />}
-              title='subnav 3'
-            >
-              <Menu.Item key='9'>option9</Menu.Item>
-              <Menu.Item key='10'>option10</Menu.Item>
-              <Menu.Item key='11'>option11</Menu.Item>
-              <Menu.Item key='12'>option12</Menu.Item>
+              <Menu.Item key='3'>
+                <Link to='/map/'>Map</Link>
+              </Menu.Item>
             </SubMenu>
           </Menu>
         </Sider>
@@ -73,6 +63,7 @@ const LayoutApp = () => {
               <Route exact path='/' component={StationsPage} />
               <Route exact path='/station/:id' component={StationPage} />
               <Route exact path='/compare' component={ComparePage} />
+              <Route exact path='/map' component={MapPage} />
             </Switch>
           </Content>
         </Layout>

@@ -6,6 +6,7 @@ const initialState = {
   allStations: [],
   currentStation: {},
   loading: false,
+  currentPageIndex: ['1'],
 };
 
 export const stationsSlice = createSlice({
@@ -24,6 +25,12 @@ export const stationsSlice = createSlice({
           };
         } else return {...s};
       });
+    },
+    setCurrentPageIndex: (state, action) => {
+      return {
+        ...state,
+        currentPageIndex: action.payload,
+      };
     },
     setCurrentStation: (state, action) => {
       return {
@@ -115,6 +122,7 @@ export const {
   setMeasurementsFormated,
   setSelectedMeasuredId,
   setUnitInfo,
+  setCurrentPageIndex,
 } = stationsSlice.actions;
 
 //@Thunks
@@ -191,6 +199,8 @@ export const setCurrentStationMeasurements = (
 
 // @SELECTORS
 export const selectAllStations = (state) => state.stations.allStations;
+export const selectCurrentPageIndex = (state) =>
+  state.stations.currentPageIndex;
 export const selectLoading = (state) => state.stations.loading;
 export const selectCurrentStation = (state) => state.stations.currentStation;
 export const selectSelectedUnitInfo = (state) =>
