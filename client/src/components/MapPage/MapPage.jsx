@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import s from './MapPage.module.sass';
 import {MapContainer, TileLayer, Marker, Popup} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -14,8 +14,25 @@ import {Link} from 'react-router-dom';
 
 function MapPage() {
   const stations = useSelector(selectAllStations);
+  const [onlySave, setOnlySave] = useState(false);
+  const [onlyOwn, setOnlyOwn] = useState(false);
 
+  console.log(stations);
   const dispatch = useDispatch();
+  const [array, setArray] = useState([...stations]);
+
+  useEffect(() => {
+    if (onlySave) {
+      setArray(stations.filter((s) => s.ID_SaveEcoBot !== null));
+      console.log(array, 'firrrrs');
+    } else if (onlyOwn) {
+      setArray(stations.filter((s) => !s.ID_SaveEcoBot));
+    } else {
+      setArray(stations);
+    }
+  }, [onlySave, onlyOwn]);
+
+  console.log(array, 'array');
 
   const Icon = L.icon({
     iconUrl: Pin,
@@ -39,7 +56,7 @@ function MapPage() {
         scrollWheelZoom={true}
         className={s.map}
       >
-        {stations.map((station) => {
+        {array.map((station) => {
           const dot = [station?.Latitude, station?.Longitude];
           const path = `/station/${station.ID_Station}`;
 
@@ -53,6 +70,30 @@ function MapPage() {
         })}
         <TileLayer url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' />
       </MapContainer>
+      <div className={s.menuWrapper}>
+        <fieldset>
+          <input
+            type='checkbox'
+            id='inputCheckSaveEco'
+            checked={onlySave}
+            onChange={() => setOnlySave(!onlySave)}
+            disabled={onlyOwn}
+          />
+          <label htmlFor='inputCheckSaveEco'>
+            Show only SaveEcoBot stations
+          </label>
+        </fieldset>
+        <fieldset>
+          <input
+            type='checkbox'
+            id='inputCheckOwn'
+            checked={onlyOwn}
+            onChange={() => setOnlyOwn(!onlyOwn)}
+            disabled={onlySave}
+          />
+          <label htmlFor='inputCheckOwn'>Show only own stations</label>
+        </fieldset>
+      </div>
     </div>
   );
 }
