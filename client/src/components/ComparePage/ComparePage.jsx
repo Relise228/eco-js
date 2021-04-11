@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {Area, Line} from '@ant-design/charts';
 import {
+  getStations,
   selectAllStations,
   selectLoading,
   setCurrentPageIndex,
@@ -41,8 +42,6 @@ function ComparePage() {
   );
 
   const dispatch = useDispatch();
-
-  console.log(first, second);
 
   useEffect(async () => {
     dispatch(setCurrentPageIndex(['2']));
