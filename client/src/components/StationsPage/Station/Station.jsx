@@ -65,7 +65,9 @@ function Station({station}) {
           </div>
           <div className={s.stationInfoValues}>{station?.units?.join(',')}</div>
           <div className={s.stationInfoView}>
-            <Link to={`/station/${station.ID_Station}`}>View</Link>
+            {station?.units?.length > 0 && (
+              <Link to={`/station/${station.ID_Station}`}>View</Link>
+            )}
           </div>
         </div>
       </div>

@@ -36,6 +36,10 @@ function StationsPage() {
     dispatch(getStations(string));
   }, []);
 
+  useEffect(() => {
+    dispatch(setPage(1));
+  }, [stations]);
+
   const onSearch = (value) => {
     setSearchValue(value);
     let string = searchValue
