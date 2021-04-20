@@ -247,11 +247,17 @@ const CompareChart = () => {
 
   let full_data = [];
 
+  console.log(dataChart.measurements_second, '<<<<<<<<<<<<<< second');
+
   if (dataChart) {
-    full_data = [
-      ...dataChart.measurements_first,
-      ...dataChart?.measurements_second,
-    ];
+    for (let ob of dataChart.measurements_first) {
+      for (let ob2 of dataChart.measurements_second) {
+        if (ob.date === ob2.date) {
+          full_data.push(ob);
+          full_data.push(ob2);
+        }
+      }
+    }
   }
 
   console.log('fullll', full_data);
@@ -268,7 +274,7 @@ const CompareChart = () => {
   // };
 
   var config = {
-    data: full_data || [],
+    data: [...full_data] || [],
     xField: 'date',
     yField: 'value',
     seriesField: 'name',
