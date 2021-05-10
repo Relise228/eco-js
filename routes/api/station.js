@@ -101,6 +101,52 @@ router.post('/units/', auth, async (req, res) => {
     })
 });
 
+// @route    POST api/station/toFavorite
+// @desc     Add station to favorite
+// @access   Private
+router.post('/toFavorite', auth, async (req, res) => {
+    const {ID_Station} = req.body;
+    var connection = new Connection(configDB.user(req.user));
+    connection.connect();
+    connection.on('connect', function(err) {
+        request = new Request(`IF NOT EXISTS (select * from Favorite_Station where ID_Station = '${ID_Station}' and ID_User = ${req.user.id}) insert into Favorite_Station(ID_User, ID_Station) values (${req.user.id}, '${ID_Station}');`, function(err, rowCount, rows) {
+            connection.close();
+            if (err) {
+                console.log(err);
+                res.status(500).send('Server error');
+            } else {
+                res.json({
+                    message: "Added to favorite"
+                });
+            }
+        });
+        connection.execSql(request);
+    })
+});
+
+// @route    POST api/station/fromFavorite
+// @desc     Delete station from favorite
+// @access   Private
+router.post('/fromFavorite', auth, async (req, res) => {
+    const {ID_Station} = req.body;
+    var connection = new Connection(configDB.user(req.user));
+    connection.connect();
+    connection.on('connect', function(err) {
+        request = new Request(`delete from Favorite_Station where ID_User = ${req.user.id} and ID_Station = '${ID_Station}';`, function(err, rowCount, rows) {
+            connection.close();
+            if (err) {
+                console.log(err);
+                res.status(500).send('Server error');
+            } else {
+                res.json({
+                    message: "Deleted from favorite"
+                });
+            }
+        });
+        connection.execSql(request);
+    })
+});
+
 // @route    GET api/station
 // @desc     Get station list by url params
 // @access   Public
@@ -110,13 +156,18 @@ router.get('/', auth, async (req, res) => {
     connection.connect();
     connection.on('connect', function(err) {
         var all = [];
-        let requestStr = "select * from Station_Coordinates";
+        let requestStr = `select ID_Station, Name, Status, ID_Server, ID_SaveEcoBot, Longitude, Latitude, (select Favorite_Station.ID_Station from Favorite_Station where ID_User = ${req.user.id} and Favorite_Station.ID_Station = Station_Coordinates.ID_Station) as Favorite from Station_Coordinates`;
+        let favStr = "";
         let orderStr = "";
 
         if (url.searchString) {
-            requestStr = `select *
-            from Station_Coordinates
-            where CHARINDEX('${url.searchString}', CONCAT(ID_Station, Name)) != 0`;
+            requestStr += ` where CHARINDEX('${url.searchString}', CONCAT(ID_Station, Name)) != 0`;
+        }
+
+        if (url.onlyFav) {
+            if (url.onlyFav == "true") {
+                favStr = (url.searchString ? " and": " where") + ` exists (select * from Favorite_Station where ID_User = ${req.user.id} and Favorite_Station.ID_Station = Station_Coordinates.ID_Station)`;
+            }
         }
 
         if (url.order == "idUp") {
@@ -125,7 +176,7 @@ router.get('/', auth, async (req, res) => {
             orderStr = " order by ID_Station DESC";
         }
 
-        request = new Request(requestStr + orderStr, function(err, rowCount, rows) {
+        request = new Request(requestStr + favStr + orderStr, function(err, rowCount, rows) {
             connection.close();
             if (err) {
                 console.log(err);

@@ -57,6 +57,7 @@ router.post('/', [
     var loginResult = false;
     connection.on('connect', function(err) {
         var all = [];
+        var user_id = null;
         request = new Request(`SELECT principal_id
                                 from master.sys.sql_logins
                                 where PWDCOMPARE('${password}', password_hash) = 1 and name = '${login}';`, function(err, rowCount, rows) {
@@ -70,6 +71,7 @@ router.post('/', [
 
                 const payload = {
                     user: {
+                        id: user_id,
                         login: login,
                         password: password
                     }
@@ -88,6 +90,7 @@ router.post('/', [
         request.on("row", columns => {
             if (columns[0].value != null) {
                 loginResult = true;
+                user_id = columns[0].value;
             }
           });
         connection.execSql(request);

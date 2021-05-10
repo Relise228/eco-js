@@ -247,7 +247,6 @@ const CompareChart = () => {
 
   let full_data = [];
 
-  console.log(dataChart.measurements_second, '<<<<<<<<<<<<<< second');
 
   if (dataChart) {
     for (let ob of dataChart.measurements_first) {
