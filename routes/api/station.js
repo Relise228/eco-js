@@ -147,6 +147,39 @@ router.post('/fromFavorite', auth, async (req, res) => {
     })
 });
 
+// @route    POST api/station/fromFavorite
+// @desc     Delete station from favorite
+// @access   Private
+router.post('/changeFavorite', auth, async (req, res) => {
+    const {ID_Station, isFavorite} = req.body;
+    var row = {};
+    var requestStr = `select ID_Station, Name, Status, ID_Server, ID_SaveEcoBot, Longitude, Latitude, (select Favorite_Station.ID_Station from Favorite_Station where ID_User = ${req.user.id} and Favorite_Station.ID_Station = Station_Coordinates.ID_Station) as Favorite from Station_Coordinates where ID_Station = '${ID_Station}';`
+    if (isFavorite == "true") {
+        requestStr = `IF NOT EXISTS (select * from Favorite_Station where ID_Station = '${ID_Station}' and ID_User = ${req.user.id}) insert into Favorite_Station(ID_User, ID_Station) values (${req.user.id}, '${ID_Station}');` + requestStr;
+    } else {
+        requestStr = `delete from Favorite_Station where ID_User = ${req.user.id} and ID_Station = '${ID_Station}';` + requestStr;
+    }
+    var connection = new Connection(configDB.user(req.user));
+    connection.connect();
+    connection.on('connect', function(err) {
+        request = new Request(requestStr, function(err, rowCount, rows) {
+            connection.close();
+            if (err) {
+                console.log(err);
+                res.status(500).send('Server error');
+            } else {
+                res.json(row);
+            }
+        });
+        request.on("row", columns => {
+            columns.forEach(column => {
+              row[column.metadata.colName] = column.value;
+            });
+          });
+        connection.execSql(request);
+    })
+});
+
 // @route    GET api/station
 // @desc     Get station list by url params
 // @access   Public
