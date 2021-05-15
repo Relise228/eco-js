@@ -199,9 +199,9 @@ export const setCurrentStationMeasurements =
   };
 
 export const updateFavorite =
-  (ID_Station, end) => async (dispatch, getState) => {
+  (ID_Station, isFavorite) => async (dispatch, getState) => {
     dispatch(setLoading(true));
-    const data = await stationsAPI.updateStatusFavorive(ID_Station, end);
+    const data = await stationsAPI.updateStatusFavorive(ID_Station, isFavorite);
     dispatch(setLoading(false));
   };
 

@@ -77,11 +77,11 @@ export const stationsAPI = {
         }
       )
       .then((response) => response.data),
-  updateStatusFavorive: (ID_Station, end) =>
+  updateStatusFavorive: (ID_Station, isFavorite) =>
     instance
       .post(
-        end ? 'api/station/toFavorite' : 'api/station/fromFavorite',
-        {ID_Station},
+        'api/station/changeFavorite',
+        {ID_Station, isFavorite},
         {
           headers: {
             'x-auth-token': sessionStorage.getItem('token'),
