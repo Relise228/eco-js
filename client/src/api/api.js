@@ -77,4 +77,16 @@ export const stationsAPI = {
         }
       )
       .then((response) => response.data),
+  updateStatusFavorive: (ID_Station, end) =>
+    instance
+      .post(
+        end ? 'api/station/toFavorite' : 'api/station/fromFavorite',
+        {ID_Station},
+        {
+          headers: {
+            'x-auth-token': sessionStorage.getItem('token'),
+          },
+        }
+      )
+      .then((response) => response.data),
 };

@@ -146,64 +146,64 @@ export const getStations = (string) => async (dispatch, getState) => {
   dispatch(setLoading(false));
 };
 
-export const setCurrentStationThunk = (
-  id,
-  DateFrom,
-  DateTo,
-  ID_Measured_Unit
-) => async (dispatch, getState) => {
-  await dispatch(setCurrentStation(id));
-  let data = await stationsAPI.getStationFullUnits(id);
-  await dispatch(setStationFullUnits(data));
-  let state = getState();
-  state.stations.currentStation.fullUnits.map(async (u) => {
-    let optimal = await stationsAPI.getStationOptimal(u.ID_Measured_Unit);
-    await dispatch(setCurrentStationOptimal(optimal));
-  });
+export const setCurrentStationThunk =
+  (id, DateFrom, DateTo, ID_Measured_Unit) => async (dispatch, getState) => {
+    await dispatch(setCurrentStation(id));
+    let data = await stationsAPI.getStationFullUnits(id);
+    await dispatch(setStationFullUnits(data));
+    let state = getState();
+    state.stations.currentStation.fullUnits.map(async (u) => {
+      let optimal = await stationsAPI.getStationOptimal(u.ID_Measured_Unit);
+      await dispatch(setCurrentStationOptimal(optimal));
+    });
 
-  let measurements = await stationsAPI.getStationMeasurements(
-    DateFrom,
-    DateTo,
-    state.stations.currentStation.ID_Station,
-    state.stations.currentStation.fullUnits[0].ID_Measured_Unit
-  );
-  await dispatch(setMeasurements(measurements));
-  state = getState();
-  await dispatch(
-    setMeasurementsFormated(
-      formatChartObject(state.stations.currentStation.measurements)
-    )
-  );
-  await dispatch(
-    setSelectedMeasuredId(
+    let measurements = await stationsAPI.getStationMeasurements(
+      DateFrom,
+      DateTo,
+      state.stations.currentStation.ID_Station,
       state.stations.currentStation.fullUnits[0].ID_Measured_Unit
-    )
-  );
-  await dispatch(setUnitInfo());
-};
+    );
+    await dispatch(setMeasurements(measurements));
+    state = getState();
+    await dispatch(
+      setMeasurementsFormated(
+        formatChartObject(state.stations.currentStation.measurements)
+      )
+    );
+    await dispatch(
+      setSelectedMeasuredId(
+        state.stations.currentStation.fullUnits[0].ID_Measured_Unit
+      )
+    );
+    await dispatch(setUnitInfo());
+  };
 
-export const setCurrentStationMeasurements = (
-  DateFrom,
-  DateTo,
-  ID_Measured_Unit
-) => async (dispatch, getState) => {
-  let state = getState();
-  let measurements = await stationsAPI.getStationMeasurements(
-    DateFrom,
-    DateTo,
-    state.stations.currentStation.ID_Station,
-    ID_Measured_Unit
-  );
-  await dispatch(setMeasurements(measurements));
-  state = getState();
-  dispatch(
-    setMeasurementsFormated(
-      formatChartObject(state.stations.currentStation.measurements)
-    )
-  );
+export const setCurrentStationMeasurements =
+  (DateFrom, DateTo, ID_Measured_Unit) => async (dispatch, getState) => {
+    let state = getState();
+    let measurements = await stationsAPI.getStationMeasurements(
+      DateFrom,
+      DateTo,
+      state.stations.currentStation.ID_Station,
+      ID_Measured_Unit
+    );
+    await dispatch(setMeasurements(measurements));
+    state = getState();
+    dispatch(
+      setMeasurementsFormated(
+        formatChartObject(state.stations.currentStation.measurements)
+      )
+    );
 
-  dispatch(setLoading(false));
-};
+    dispatch(setLoading(false));
+  };
+
+export const updateFavorite =
+  (ID_Station, end) => async (dispatch, getState) => {
+    dispatch(setLoading(true));
+    const data = await stationsAPI.updateStatusFavorive(ID_Station, end);
+    dispatch(setLoading(false));
+  };
 
 // @SELECTORS
 export const selectAllStations = (state) => state.stations.allStations;

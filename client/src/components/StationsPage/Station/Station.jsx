@@ -6,14 +6,19 @@ import s from './Station.module.sass';
 import {MapContainer, TileLayer, Marker, Popup} from 'react-leaflet';
 import {Link} from 'react-router-dom';
 
+import {Tag} from 'antd';
+
 import 'leaflet/dist/leaflet.css';
 import Pin from 'leaflet/dist/images/marker-icon-2x.png';
 import Shadow from 'leaflet/dist/images/marker-shadow.png';
 import SaveEcoBot from '../../../img/SaveEcoBot.png';
 import OwnImg from '../../../img/own.png';
+import {useDispatch} from 'react-redux';
+import {updateFavorite} from '../../../redux/features/stationsSlice';
 
 function Station({station}) {
   const dot = [station.Latitude, station.Longitude];
+  const dispatch = useDispatch();
 
   const Icon = L.icon({
     iconUrl: Pin,
@@ -54,6 +59,19 @@ function Station({station}) {
             ID Station: {station.ID_Station}
           </div>
           <div className={s.stationInfoName}>{station.Name}</div>
+          {station.Favorite ? (
+            <Tag closable className={s.tag} color='gold'>
+              Favorite
+            </Tag>
+          ) : (
+            <Tag
+              className={s.tag}
+              onClick={() => dispatch(updateFavorite(station.ID_Station, true))}
+              color='cyan'
+            >
+              To Favorite
+            </Tag>
+          )}
           <div className={s.stationInfoStatus} style={style}></div>
         </div>
         <div className={s.stationInfoBottom}>

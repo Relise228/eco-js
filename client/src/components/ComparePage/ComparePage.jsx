@@ -136,7 +136,7 @@ function ComparePage() {
     <div className={s.compare}>
       <div className={s.compareHeader}>
         <div className={s.firstStation}>
-          Choose first Station:
+          Select first Station:
           <Select
             style={{width: 220, marginLeft: 30}}
             onChange={handleChangeFirst}
@@ -151,7 +151,7 @@ function ComparePage() {
           </Select>
         </div>
         <div className={s.secondStation}>
-          Choose second Station:
+          Select second Station:
           <Select
             style={{width: 220, marginLeft: 30}}
             onChange={handleChangeSecond}
@@ -167,7 +167,7 @@ function ComparePage() {
         </div>
 
         <div className={s.stationUnits}>
-          Choose second Station:
+          Select Unit:
           <Select
             style={{width: 220, marginLeft: 30}}
             onChange={handleChangeUnit}
@@ -246,8 +246,6 @@ const CompareChart = () => {
   // };
 
   let full_data = [];
-
-  console.log(dataChart.measurements_second, '<<<<<<<<<<<<<< second');
 
   if (dataChart) {
     for (let ob of dataChart.measurements_first) {
