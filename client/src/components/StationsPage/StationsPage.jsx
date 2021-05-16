@@ -1,4 +1,4 @@
-import {Input, Select, Pagination} from 'antd';
+import {Input, Select, Pagination, Checkbox} from 'antd';
 
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
@@ -19,6 +19,7 @@ const {Option} = Select;
 
 function StationsPage() {
   const [searchValue, setSearchValue] = useState('');
+  const [checked, setChecked] = useState(false);
   const [sortValue, setSortValue] = useState('idUp');
   let pageSize = 10;
   const page = useSelector(selectPage);
@@ -56,6 +57,17 @@ function StationsPage() {
     dispatch(getStations(string));
   }
 
+  function changeCheck(e) {
+    setChecked(e.target.checked);
+    let string = `?order=${sortValue}`;
+    if (searchValue) {
+      string += `&searchString=${searchValue}`;
+    } else if (e.target.checked === true) {
+      string += `&onlyFav=${e.target.checked}`;
+    }
+    dispatch(getStations(string));
+  }
+
   let portionStation = stations?.slice(page * 10 - 10, page * pageSize);
   useEffect(() => {
     if (stations !== undefined) {
@@ -69,7 +81,7 @@ function StationsPage() {
   };
 
   if (loading) return <Loader />;
-
+  // d
   return (
     <div className={s.stations}>
       <div className={s.funcButtons}>
@@ -81,6 +93,11 @@ function StationsPage() {
             value={searchValue}
             onChange={(e) => setSearchValue(e.currentTarget.value)}
           />
+        </div>
+        <div>
+          <Checkbox checked={checked} onChange={changeCheck}>
+            Favorite
+          </Checkbox>
         </div>
         <div className={s.sortWrapper}>
           Sort

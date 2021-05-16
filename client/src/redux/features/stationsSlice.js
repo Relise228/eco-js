@@ -17,6 +17,22 @@ export const stationsSlice = createSlice({
     setStations: (state, action) => {
       state.allStations = action.payload;
     },
+    updateStations: (state, action) => {
+      return {
+        ...state,
+        allStations: [
+          ...state.allStations.map((s) => {
+            if (s.ID_Station === action.payload.ID_Station) {
+              return {
+                ...s,
+                ...action.payload,
+                Favorite: action.payload.Favorite,
+              };
+            } else return {...s};
+          }),
+        ],
+      };
+    },
     setStationsUnit: (state, action) => {
       state.allStations = state.allStations.map((s) => {
         if (s.ID_Station === action.payload.id) {
@@ -131,6 +147,7 @@ export const {
   setUnitInfo,
   setCurrentPageIndex,
   setPage,
+  updateStations,
 } = stationsSlice.actions;
 
 //@Thunks
@@ -202,6 +219,7 @@ export const updateFavorite =
   (ID_Station, isFavorite) => async (dispatch, getState) => {
     dispatch(setLoading(true));
     const data = await stationsAPI.updateStatusFavorive(ID_Station, isFavorite);
+    dispatch(updateStations(data));
     dispatch(setLoading(false));
   };
 

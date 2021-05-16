@@ -60,7 +60,14 @@ function Station({station}) {
           </div>
           <div className={s.stationInfoName}>{station.Name}</div>
           {station.Favorite ? (
-            <Tag closable className={s.tag} color='gold'>
+            <Tag
+              onClose={() =>
+                dispatch(updateFavorite(station.ID_Station, false))
+              }
+              closable
+              className={s.tag}
+              color='gold'
+            >
               Favorite
             </Tag>
           ) : (

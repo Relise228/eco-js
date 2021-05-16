@@ -214,37 +214,6 @@ function ComparePage() {
 const CompareChart = () => {
   const dataChart = useSelector(selectMeasurements);
 
-  useEffect(() => {}, []);
-
-  // const config = {
-  //   data: station.measurementsFormated,
-  //   tooltip: {
-  //     formatter: (datum) => {
-  //       const sign = station.fullUnits?.filter(
-  //         (u) => u?.ID_Measured_Unit === station.selectedMeasuredId
-  //       );
-  //       return {name: 'Value', value: datum.value + ' ' + sign[0]?.Unit};
-  //     },
-  //   },
-  //   xField: 'date',
-  //   yField: 'value',
-  //   padding: 'auto',
-  //   xAxis: {tickCount: 5},
-  //   slider: {
-  //     start: 0,
-  //     end: 1,
-  //   },
-  //   point: station.measurementsFormated?.length < 100 && {
-  //     size: 5,
-  //     shape: 'diamond',
-  //     style: {
-  //       fill: 'white',
-  //       stroke: '#5B8FF9',
-  //       lineWidth: 2,
-  //     },
-  //   },
-  // };
-
   let full_data = [];
 
   if (dataChart) {
@@ -259,17 +228,6 @@ const CompareChart = () => {
   }
 
   console.log('fullll', full_data);
-  // console.log(det);
-  // var config = {
-  //   data: full_data || [],
-  //   xField: 'date',
-  //   yField: 'value',
-  //   seriesField: 'name',
-  //   slider: {
-  //     start: 0.1,
-  //     end: 0.9,
-  //   },
-  // };
 
   var config = {
     data: [...full_data] || [],
