@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import s from './StationPage.module.sass';
+import ButtonCSV from '../ButtonCsv/ButtonCSV';
 import {DatePicker, Select} from 'antd';
 import {useDispatch, useSelector} from 'react-redux';
 import {Line} from '@ant-design/charts';
@@ -155,6 +156,15 @@ const StationPage = React.memo(({match}) => {
       );
   };
 
+  const formatObj = (obj) => {
+    return obj.map((e) => {
+      return {
+        value: e.value,
+        date: e.date,
+      };
+    });
+  };
+
   return (
     <div className={s.stationPage}>
       <MainInfoStation
@@ -190,6 +200,18 @@ const StationPage = React.memo(({match}) => {
                 </Option>
               ))}
             </Select>
+            <ButtonCSV
+              csvData={formatObj(station.measurementsFormated)}
+              fileName={`${
+                station.fullUnits.filter(
+                  (u) => u.ID_Measured_Unit === station.selectedMeasuredId
+                )[0].Title
+              }_${
+                station.measurementsFormated[
+                  station.measurementsFormated?.length - 1
+                ]?.date
+              }`}
+            />
           </div>
         )}
       </div>

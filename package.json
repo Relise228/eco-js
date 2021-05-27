@@ -15,10 +15,12 @@
     "config": "^3.3.6",
     "express": "^4.16.4",
     "express-validator": "^6.4.0",
+    "file-saver": "^2.0.5",
     "jsonwebtoken": "^8.5.1",
     "mqtt": "^4.2.6",
     "request": "^2.88.2",
-    "tedious": "^8.3.0"
+    "tedious": "^8.3.0",
+    "xlsx": "^0.17.0"
   },
   "devDependencies": {
     "concurrently": "^4.0.1",
