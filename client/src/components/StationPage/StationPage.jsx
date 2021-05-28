@@ -161,13 +161,15 @@ const StationPage = React.memo(({match}) => {
   )[0];
 
   const formatObj = (obj) => {
-    return obj.map((e) => {
-      return {
-        value: e.value,
-        unit: `${unit.Title}, ${unit.Unit}`,
-        date: e.date,
-      };
-    });
+    return obj
+      .map((e) => {
+        return {
+          value: e.value,
+          unit: `${unit.Title}, ${unit.Unit}`,
+          date: e.date,
+        };
+      })
+      .reverse();
   };
 
   return (
