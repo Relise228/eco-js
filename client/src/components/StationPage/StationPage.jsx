@@ -156,10 +156,15 @@ const StationPage = React.memo(({match}) => {
       );
   };
 
+  const unit = station.fullUnits?.filter(
+    (u) => u.ID_Measured_Unit === station.selectedMeasuredId
+  )[0];
+
   const formatObj = (obj) => {
     return obj.map((e) => {
       return {
         value: e.value,
+        unit: `${unit.Title}, ${unit.Unit}`,
         date: e.date,
       };
     });
@@ -200,18 +205,20 @@ const StationPage = React.memo(({match}) => {
                 </Option>
               ))}
             </Select>
-            <ButtonCSV
-              csvData={formatObj(station.measurementsFormated)}
-              fileName={`${
-                station.fullUnits.filter(
-                  (u) => u.ID_Measured_Unit === station.selectedMeasuredId
-                )[0].Title
-              }_${
-                station.measurementsFormated[
-                  station.measurementsFormated?.length - 1
-                ]?.date
-              }`}
-            />
+            {station.measurementsFormated.length > 0 && (
+              <ButtonCSV
+                csvData={formatObj(station.measurementsFormated)}
+                fileName={`${
+                  station.fullUnits.filter(
+                    (u) => u.ID_Measured_Unit === station.selectedMeasuredId
+                  )[0].Title
+                }_${
+                  station.measurementsFormated[
+                    station.measurementsFormated?.length - 1
+                  ]?.date
+                }`}
+              />
+            )}
           </div>
         )}
       </div>
