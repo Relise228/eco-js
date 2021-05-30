@@ -2,7 +2,7 @@ import axios from 'axios';
 import {loginUser} from '../redux/features/authSlice';
 
 const instance = axios.create({
-  baseURL: '/',
+  baseURL: 'http://localhost:4000/',
   headers: {
     'Content-type': 'application/json',
   },
