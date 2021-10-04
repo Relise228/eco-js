@@ -229,4 +229,36 @@ router.get('/', auth, async (req, res) => {
     })
 });
 
+// @route    GET api/station/one
+// @desc     Get station list by url params
+// @access   Public
+router.post('/one/', auth, async (req, res) => {
+    var url = req.query;
+    var connection = new Connection(configDB.user(req.user));
+    connection.connect();
+    connection.on('connect', function(err) {
+        let row = {}
+    
+        const {ID_Station} = req.body;
+
+        let requestStr = `select Station.ID_Station, Name, City, Status, ID_Server, ID_SaveEcoBot, Longitude, Latitude from Station inner join Coordinates on Station.ID_Station = Coordinates.ID_Station where Station.ID_Station = ${ID_Station}`;
+
+        request = new Request(requestStr, function(err, rowCount, rows) {
+            connection.close();
+            if (err) {
+                console.log(err);
+                res.status(500).send('Server error');
+            } else {
+                res.json(row);
+            }
+        });
+        request.on("row", columns => {
+            columns.forEach(column => {
+              row[column.metadata.colName] = column.value;
+            });
+          });
+        connection.execSql(request);
+    })
+});
+
 module.exports = router;

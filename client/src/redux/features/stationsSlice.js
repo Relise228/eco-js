@@ -52,11 +52,11 @@ export const stationsSlice = createSlice({
     setCurrentStation: (state, action) => {
       return {
         ...state,
-        currentStation: {
+        currentStation: action.payload?.id ? {
           ...state.allStations.filter(
             (s) => s.ID_Station === action.payload
           )[0],
-        },
+        } : {...action.payload?.station},
       };
     },
     setStationFullUnits: (state, action) => {
@@ -163,9 +163,23 @@ export const getStations = (string) => async (dispatch, getState) => {
   dispatch(setLoading(false));
 };
 
+export const getOneStation = (id, DateFrom, DateTo) => async (dispatch, getState) => {
+  let station = await stationsAPI.getOneStation(id);
+  let unitData = await stationsAPI.getStationsUnit(id);
+  station.units = [...unitData]
+  await dispatch(setCurrentStation({station}));
+
+  let state = getState();
+
+  dispatch(setCurrentStationThunk(id, DateFrom, DateTo))
+
+  state.stations.currentStation.ID_Station && dispatch(setLoading(false))
+ 
+}
+
 export const setCurrentStationThunk =
-  (id, DateFrom, DateTo, ID_Measured_Unit) => async (dispatch, getState) => {
-    await dispatch(setCurrentStation(id));
+  (id, DateFrom, DateTo) => async (dispatch, getState) => {
+
     let data = await stationsAPI.getStationFullUnits(id);
     await dispatch(setStationFullUnits(data));
     let state = getState();

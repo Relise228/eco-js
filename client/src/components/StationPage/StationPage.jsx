@@ -15,11 +15,13 @@ import {
   selectSelectedUnitInfo,
   selectSelectedUnitInfoOptimal,
   setCurrentPageIndex,
+  getOneStation,
 } from '../../redux/features/stationsSlice';
 import Loader from '../Loader/Loader';
 import moment from 'moment';
 import BoxValue from './BoxValue/BoxValue';
 import MainInfoStation from '../MainInfoStation/MainInfoStation';
+import { useParams } from 'react-router-dom';
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -32,6 +34,9 @@ const StationPage = React.memo(({match}) => {
   const selectedUnitInfoOptimal = useSelector(selectSelectedUnitInfoOptimal);
 
   const dispatch = useDispatch();
+  const params = useParams();
+
+  console.log(params)
 
   const [dateEnd, setDateEnd] = useState(moment(new Date(), dateFormat));
   const [dateStart, setDateStart] = useState(
@@ -41,15 +46,16 @@ const StationPage = React.memo(({match}) => {
   useEffect(async () => {
     dispatch(setLoading(true));
     dispatch(setCurrentPageIndex(['1']));
-    await dispatch(
-      setCurrentStationThunk(
-        match.params.id,
-        dateStart.format(dateFormat),
-        dateEnd.format(dateFormat)
-      )
-    );
-    dispatch(setLoading(false));
-  }, []);
+    dispatch(getOneStation(params.id,dateStart.format(dateFormat),dateEnd.format(dateFormat)))
+
+    // await dispatch(
+    //   setCurrentStationThunk(
+    //     params.id,
+    //     dateStart.format(dateFormat),
+    //     dateEnd.format(dateFormat)
+    //   )
+    // );
+  }, [params.id]);
 
   const config = {
     data: station.measurementsFormated,
