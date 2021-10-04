@@ -80,7 +80,7 @@ const LayoutApp = ({children}) => {
             }}
           >
             <Switch>
-            <Route path='/login' component={LoginPage} />
+              <Route path='/login' component={LoginPage} />
               <Route exact path='/' component={StationsPage} />
               <Route exact path='/station/:id' component={StationPage} />
               <Route exact path='/compare' component={ComparePage} />
