@@ -15,17 +15,17 @@ import ComparePage from '../ComparePage/ComparePage';
 import MapPage from '../MapPage/MapPage';
 import {selectCurrentPageIndex} from '../../redux/features/stationsSlice';
 import s from './LayoutApp.module.sass';
+import LoginPage from '../LoginPage/LoginPage';
 
 const {SubMenu} = Menu;
 const {Header, Content, Sider} = Layout;
-const LayoutApp = () => {
+const LayoutApp = ({children}) => {
   const auth = useSelector(selectIsAuth);
   const index = useSelector(selectCurrentPageIndex);
   const dispatch = useDispatch();
+  const {token} = sessionStorage;
 
-  if (!auth) return <Redirect to={'/login'} />;
-
-  return (
+  return !token ? <Redirect to={'login'} /> : (
     <Layout style={{minHeight: '100vh'}}>
       {/* <Header className='header'>
         <div className='logo' />
@@ -80,6 +80,7 @@ const LayoutApp = () => {
             }}
           >
             <Switch>
+              <Route path='/login' component={LoginPage} />
               <Route exact path='/' component={StationsPage} />
               <Route exact path='/station/:id' component={StationPage} />
               <Route exact path='/compare' component={ComparePage} />

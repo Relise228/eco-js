@@ -20,7 +20,7 @@ function App() {
   return (
     <div className='app'>
       <Switch>
-        <Route path='/login' component={LoginPage} />
+      
         <Route path='/' component={SuspendedLayout} />
       </Switch>
     </div>

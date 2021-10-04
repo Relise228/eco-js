@@ -55,8 +55,8 @@ const LoginPage = React.memo(({history}) => {
     console.log('Failed:', errorInfo);
   };
 
-  if (auth) return <Redirect to={'/'} />;
-  return (
+
+  return sessionStorage.token ? <Redirect to={'/'}/> : (
     <div className={'login'}>
       <div className={'logoWrapper'}>
         <img src={Logo} alt='' />

@@ -2,7 +2,7 @@ import axios from 'axios';
 import {loginUser} from '../redux/features/authSlice';
 
 const instance = axios.create({
-  baseURL: '/',
+  baseURL: 'http://localhost:4000/',
   headers: {
     'Content-type': 'application/json',
   },
@@ -16,6 +16,14 @@ export const userAPI = {
 };
 
 export const stationsAPI = {
+  getOneStation: (id) =>
+    instance
+      .post(`api/station/one/`, {ID_Station: id}, {
+        headers: {
+          'x-auth-token': sessionStorage.getItem('token'),
+        },
+      })
+      .then((response) => response.data),
   getAllStations: (string) =>
     instance
       .get(`api/station/${string}`, {
