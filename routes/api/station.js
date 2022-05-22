@@ -80,10 +80,7 @@ router.post('/units/', auth, async (req, res) => {
     connection.on('connect', function(err) {
         var all = [];
         request = new Request(`select Title
-                                from Measurment inner join Measured_Unit
-                                ON Measurment.ID_Measured_Unit = Measured_Unit.ID_Measured_Unit
-                                where ID_Station = '${ID_Station}'
-                                group by Title;`, function(err, rowCount, rows) {
+                                from  Measured_Unit`, function(err, rowCount, rows) {
             connection.close();
             if (err) {
                 console.log(err);
