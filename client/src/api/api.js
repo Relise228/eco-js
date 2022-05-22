@@ -1,28 +1,32 @@
-import axios from 'axios';
-import {loginUser} from '../redux/features/authSlice';
+import axios from 'axios'
+import { loginUser } from '../redux/features/authSlice'
 
 const instance = axios.create({
-  baseURL: 'http://localhost:4000/',
+  baseURL: window.location.origin + '/',
   headers: {
     'Content-type': 'application/json',
   },
-});
+})
 
 export const userAPI = {
   login: (login, password) =>
     instance
-      .post('api/auth', {login: login, password: password})
+      .post('api/auth', { login: login, password: password })
       .then((response) => response.data),
-};
+}
 
 export const stationsAPI = {
   getOneStation: (id) =>
     instance
-      .post(`api/station/one/`, {ID_Station: id}, {
-        headers: {
-          'x-auth-token': sessionStorage.getItem('token'),
-        },
-      })
+      .post(
+        `api/station/one/`,
+        { ID_Station: id },
+        {
+          headers: {
+            'x-auth-token': sessionStorage.getItem('token'),
+          },
+        }
+      )
       .then((response) => response.data),
   getAllStations: (string) =>
     instance
@@ -36,7 +40,7 @@ export const stationsAPI = {
     instance
       .post(
         'api/station/units/',
-        {ID_Station: id},
+        { ID_Station: id },
         {
           headers: {
             'x-auth-token': sessionStorage.getItem('token'),
@@ -48,7 +52,7 @@ export const stationsAPI = {
     instance
       .post(
         'api/station/unitsFull/',
-        {ID_Station: id},
+        { ID_Station: id },
         {
           headers: {
             'x-auth-token': sessionStorage.getItem('token'),
@@ -60,7 +64,7 @@ export const stationsAPI = {
     instance
       .post(
         'api/measurement/optimalValue',
-        {ID_Measured_Unit: idUnit},
+        { ID_Measured_Unit: idUnit },
         {
           headers: {
             'x-auth-token': sessionStorage.getItem('token'),
@@ -89,7 +93,7 @@ export const stationsAPI = {
     instance
       .post(
         'api/station/changeFavorite',
-        {ID_Station, isFavorite: `${isFavorite}`},
+        { ID_Station, isFavorite: `${isFavorite}` },
         {
           headers: {
             'x-auth-token': sessionStorage.getItem('token'),
@@ -97,4 +101,4 @@ export const stationsAPI = {
         }
       )
       .then((response) => response.data),
-};
+}
