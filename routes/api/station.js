@@ -82,7 +82,7 @@ router.post('/units/', auth, async (req, res) => {
         request = new Request(`select Title
                                 from Measurment inner join Measured_Unit
                                 ON Measurment.ID_Measured_Unit = Measured_Unit.ID_Measured_Unit
-                                where ID_Station = 0009 AND Time > DATEADD(minute, -30, GETDATE())
+                                where ID_Station = '${ID_Station}' AND Time > DATEADD(minute, -30, GETDATE())
                                 group by Title;`, function(err, rowCount, rows) {
             connection.close();
             if (err) {
