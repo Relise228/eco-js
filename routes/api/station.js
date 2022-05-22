@@ -49,7 +49,7 @@ router.post('/unitsFull', auth, async (req, res) => {
         request = new Request(`select Measurment.ID_Measured_Unit, Title, Unit
                                 from Measurment inner join Measured_Unit
                                 ON Measurment.ID_Measured_Unit = Measured_Unit.ID_Measured_Unit
-                                where ID_Station = '${ID_Station}'
+                                where ID_Station = '${ID_Station}' AND DATEADD(minute,-30,GETDATE())
                                 group by Measurment.ID_Measured_Unit, Title, Unit;`, function(err, rowCount, rows) {
             connection.close();
             if (err) {
