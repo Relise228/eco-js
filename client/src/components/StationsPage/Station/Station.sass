@@ -1,0 +1,134 @@
+.station
+    background-color: #fff
+    position: relative
+    color: #1890ff !important
+    top: 0
+    right: 0
+    transition: all .3s ease-in-out
+
+    &:not(.station-on-page):hover
+        transform: translate(3px,-3px)
+
+    &:not(.station-on-page) .card 
+        &:hover
+            box-shadow: -7px 5px 10px  #8cc541
+    
+    &.station-on-page .card 
+        box-shadow: 0px 0px 15px  #8cc541    
+        border-radius: 20px    
+        
+        
+.card-body
+    padding: 2rem
+    
+    @media screen and (min-width: 768px) 
+            padding: 1rem   
+    
+.station-badges  
+    padding-bottom: 5rem  
+    max-width: 320px        
+
+    
+    @media screen and (min-width: 768px) 
+        padding-bottom: 0
+        max-width: 750px        
+
+.station-name
+    font-size: 14px
+    font-weight: 500
+    color: #1890ff
+    max-width: 150px
+
+    @media screen and (min-width: 768px) 
+        font-size: 20px
+        max-width: 350px
+
+.badge 
+    color: #fff
+
+.badge-primary
+    background-color: #5b02c0
+
+.badge-success
+    background-color: #28a745
+
+.badge-dark
+    background-color: #343a40
+
+.badge-light
+    background-color: #cacaca  
+
+.badge-secondary
+    background-color: #6c757d 
+
+.badge-warning
+    background-color: #ffc107   
+
+.station-logo
+    width: 70px 
+
+.logo-wrapper
+    position: absolute
+    bottom: 7px
+    left: 10px
+    width: fit-content
+
+    @media screen and (min-width: 768px) 
+        bottom: 5px
+        left: -3px
+
+.station-status 
+    position: absolute
+    top: 0
+    right: 35px
+
+    @media screen and (min-width: 768px) 
+        right: 70px  
+        top: 4px
+
+    &.disabled
+        &::after
+            background-color: red
+
+    &:after
+        position: absolute
+        content: ''
+        width: 15px
+        height: 15px
+        background-color:#8cc541
+        border-radius: 50%
+        top: 4px
+        right: -20px
+
+    &.active-station
+       &:after
+            animation: blinking 2s infinite
+
+            @keyframes blinking 
+                0%
+                    opacity: 0
+                50%
+                    opacity: 1
+                100%
+                    opacity: 0   
+
+.station-buttons
+    position: absolute
+    bottom: 20px
+    right: 35px  
+
+    @media screen and (min-width: 768px) 
+        bottom: 17px
+        right: 50px
+
+
+.favorite 
+    width: 0
+    height: 0
+    border-top: 20px solid #ffc107
+    border-left: 20px solid transparent
+    position: absolute
+    right: 0
+
+.card
+    overflow: hidden

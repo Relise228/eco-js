@@ -1,17 +1,21 @@
-import axios from 'axios'
-import { loginUser } from '../redux/features/authSlice'
+import axios from "axios"
+
+const baseURL =
+  window.location.origin === "http://localhost:8000"
+    ? "http://localhost:4000"
+    : `${window.location.origin}/`
 
 const instance = axios.create({
-  baseURL: window.location.origin + '/',
+  baseURL,
   headers: {
-    'Content-type': 'application/json',
+    "Content-type": "application/json",
   },
 })
 
 export const userAPI = {
   login: (login, password) =>
     instance
-      .post('api/auth', { login: login, password: password })
+      .post("api/auth", { login: login, password: password })
       .then((response) => response.data),
 }
 
@@ -23,7 +27,7 @@ export const stationsAPI = {
         { ID_Station: id },
         {
           headers: {
-            'x-auth-token': sessionStorage.getItem('token'),
+            "x-auth-token": localStorage.getItem("token"),
           },
         }
       )
@@ -32,18 +36,18 @@ export const stationsAPI = {
     instance
       .get(`api/station/${string}`, {
         headers: {
-          'x-auth-token': sessionStorage.getItem('token'),
+          "x-auth-token": localStorage.getItem("token"),
         },
       })
       .then((response) => response.data),
   getStationsUnit: (id) =>
     instance
       .post(
-        'api/station/units/',
+        "api/station/units/",
         { ID_Station: id },
         {
           headers: {
-            'x-auth-token': sessionStorage.getItem('token'),
+            "x-auth-token": localStorage.getItem("token"),
           },
         }
       )
@@ -51,11 +55,11 @@ export const stationsAPI = {
   getStationFullUnits: (id) =>
     instance
       .post(
-        'api/station/unitsFull/',
+        "api/station/unitsFull/",
         { ID_Station: id },
         {
           headers: {
-            'x-auth-token': sessionStorage.getItem('token'),
+            "x-auth-token": localStorage.getItem("token"),
           },
         }
       )
@@ -63,11 +67,11 @@ export const stationsAPI = {
   getStationOptimal: (idUnit) =>
     instance
       .post(
-        'api/measurement/optimalValue',
+        "api/measurement/optimalValue",
         { ID_Measured_Unit: idUnit },
         {
           headers: {
-            'x-auth-token': sessionStorage.getItem('token'),
+            "x-auth-token": localStorage.getItem("token"),
           },
         }
       )
@@ -75,7 +79,7 @@ export const stationsAPI = {
   getStationMeasurements: (DateFrom, DateTo, ID_Station, ID_Measured_Unit) =>
     instance
       .post(
-        'api/station/measurements',
+        "api/station/measurements",
         {
           DateFrom: DateFrom,
           DateTo: DateTo,
@@ -84,7 +88,7 @@ export const stationsAPI = {
         },
         {
           headers: {
-            'x-auth-token': sessionStorage.getItem('token'),
+            "x-auth-token": localStorage.getItem("token"),
           },
         }
       )
@@ -92,11 +96,11 @@ export const stationsAPI = {
   updateStatusFavorive: (ID_Station, isFavorite) =>
     instance
       .post(
-        'api/station/changeFavorite',
+        "api/station/changeFavorite",
         { ID_Station, isFavorite: `${isFavorite}` },
         {
           headers: {
-            'x-auth-token': sessionStorage.getItem('token'),
+            "x-auth-token": localStorage.getItem("token"),
           },
         }
       )

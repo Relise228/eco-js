@@ -1,138 +1,138 @@
-import {createSlice} from '@reduxjs/toolkit';
-import {stationsAPI} from '../../api/api';
-import {formatChartObject, parseCommonUnits} from '../../util/util';
+import { createSlice } from "@reduxjs/toolkit"
+import { stationsAPI } from "../../api/api"
+import { formatChartObject, parseCommonUnits } from "../../util/util"
+import { setAuth } from "./authSlice"
 
 const initialState = {
   allStations: [],
   currentStation: {},
   loading: false,
-  currentPageIndex: ['1'],
-  page: 1,
-};
+  currentPageIndex: ["1"],
+  page: 1
+}
 
 export const stationsSlice = createSlice({
-  name: 'stations',
+  name: "stations",
   initialState,
   reducers: {
     setStations: (state, action) => {
-      state.allStations = action.payload;
+      state.allStations = action.payload
     },
     updateStations: (state, action) => {
       return {
         ...state,
         allStations: [
-          ...state.allStations.map((s) => {
+          ...state.allStations.map(s => {
             if (s.ID_Station === action.payload.ID_Station) {
               return {
                 ...s,
                 ...action.payload,
-                Favorite: action.payload.Favorite,
-              };
-            } else return {...s};
-          }),
-        ],
-      };
+                Favorite: action.payload.Favorite
+              }
+            } else return { ...s }
+          })
+        ]
+      }
     },
     setStationsUnit: (state, action) => {
-      state.allStations = state.allStations.map((s) => {
+      state.allStations = state.allStations.map(s => {
         if (s.ID_Station === action.payload.id) {
           return {
             ...s,
-            units: [...action.payload.units],
-          };
-        } else return {...s};
-      });
+            units: [...action.payload.units]
+          }
+        } else return { ...s }
+      })
     },
     setCurrentPageIndex: (state, action) => {
       return {
         ...state,
-        currentPageIndex: action.payload,
-      };
+        currentPageIndex: action.payload
+      }
     },
     setCurrentStation: (state, action) => {
       return {
         ...state,
-        currentStation: action.payload?.id ? {
-          ...state.allStations.filter(
-            (s) => s.ID_Station === action.payload
-          )[0],
-        } : {...action.payload?.station},
-      };
+        currentStation: action.payload?.id
+          ? {
+              ...state.allStations.filter(s => s.ID_Station === action.payload)[0]
+            }
+          : { ...action.payload?.station }
+      }
     },
     setStationFullUnits: (state, action) => {
       return {
         ...state,
-        currentStation: {...state.currentStation, fullUnits: action.payload},
-      };
+        currentStation: { ...state.currentStation, fullUnits: action.payload }
+      }
     },
     setPage: (state, action) => {
       return {
         ...state,
-        page: action.payload,
-      };
+        page: action.payload
+      }
     },
 
     setCurrentStationOptimal: (state, action) => {
-      const optimal = state.currentStation.optimal
-        ? [...state.currentStation.optimal, action.payload]
-        : [action.payload];
+      const optimal = state.currentStation.optimal ? [...state.currentStation.optimal, action.payload] : [action.payload]
       return {
         ...state,
         currentStation: {
           ...state.currentStation,
-          optimal,
-        },
-      };
+          optimal
+        }
+      }
     },
     setLoading: (state, action) => {
       return {
         ...state,
-        loading: action.payload,
-      };
+        loading: action.payload
+      }
     },
     setMeasurements: (state, action) => {
       return {
         ...state,
-        currentStation: {...state.currentStation, measurements: action.payload},
-      };
+        currentStation: {
+          ...state.currentStation,
+          measurements: action.payload
+        }
+      }
     },
     setMeasurementsFormated: (state, action) => {
       return {
         ...state,
         currentStation: {
           ...state.currentStation,
-          measurementsFormated: action.payload,
-        },
-      };
+          measurementsFormated: action.payload
+        }
+      }
     },
     setSelectedMeasuredId: (state, action) => {
       return {
         ...state,
         currentStation: {
           ...state.currentStation,
-          selectedMeasuredId: action.payload,
-        },
-      };
+          selectedMeasuredId: action.payload
+        }
+      }
     },
-    setUnitInfo: (state) => {
+    setUnitInfo: state => {
       return {
         ...state,
         currentStation: {
           ...state.currentStation,
           selectedUnitInfo: state.currentStation.fullUnits?.filter(
-            (u) =>
-              u.ID_Measured_Unit === state.currentStation.selectedMeasuredId
+            u => u.ID_Measured_Unit === state.currentStation.selectedMeasuredId
           ),
 
           selectedUnitInfoOptimal: state.currentStation.optimal?.filter(
-            (u) =>
-              u[0]?.ID_Measured_Unit === state.currentStation.selectedMeasuredId
-          ),
-        },
-      };
-    },
-  },
-});
+            u => u[0]?.ID_Measured_Unit === state.currentStation.selectedMeasuredId
+          )
+        }
+      }
+    }
+  }
+})
 
 export const {
   setStations,
@@ -147,106 +147,93 @@ export const {
   setUnitInfo,
   setCurrentPageIndex,
   setPage,
-  updateStations,
-} = stationsSlice.actions;
+  updateStations
+} = stationsSlice.actions
 
 //@Thunks
-export const getStations = (string) => async (dispatch, getState) => {
-  dispatch(setLoading(true));
-  const data = await stationsAPI.getAllStations(string);
-  await dispatch(setStations(data));
-  const state = getState();
-  state.stations.allStations.map(async (s) => {
-    let unitData = await stationsAPI.getStationsUnit(s.ID_Station);
-    dispatch(setStationsUnit({id: s.ID_Station, units: unitData}));
-  });
-  dispatch(setLoading(false));
-};
+export const getStations =
+  (string, units = true) =>
+  async (dispatch, getState) => {
+    dispatch(setLoading(true))
+    dispatch(setStations([]))
+
+    const data = await stationsAPI.getAllStations(string)
+
+    if (Array.isArray(data)) {
+      dispatch(setStations(data))
+
+      if (units) {
+        for (let s of data) {
+          let unitData = await stationsAPI.getStationsUnit(s.ID_Station)
+          dispatch(setStationsUnit({ id: s.ID_Station, units: unitData }))
+        }
+      }
+    } else {
+      localStorage.removeItem("token")
+      dispatch(setAuth(false))
+    }
+
+    dispatch(setLoading(false))
+  }
 
 export const getOneStation = (id, DateFrom, DateTo) => async (dispatch, getState) => {
-  let station = await stationsAPI.getOneStation(id);
-  let unitData = await stationsAPI.getStationsUnit(id);
+  dispatch(setLoading(true))
+  let station = await stationsAPI.getOneStation(id)
+  let unitData = await stationsAPI.getStationsUnit(id)
   station.units = [...unitData]
-  await dispatch(setCurrentStation({station}));
+  await dispatch(setCurrentStation({ station }))
 
-  let state = getState();
+  let state = getState()
 
-  dispatch(setCurrentStationThunk(id, DateFrom, DateTo))
+  await dispatch(setCurrentStationThunk(id, DateFrom, DateTo))
 
   state.stations.currentStation.ID_Station && dispatch(setLoading(false))
- 
 }
 
-export const setCurrentStationThunk =
-  (id, DateFrom, DateTo) => async (dispatch, getState) => {
+export const setCurrentStationThunk = (id, DateFrom, DateTo) => async (dispatch, getState) => {
+  let data = await stationsAPI.getStationFullUnits(id)
+  await dispatch(setStationFullUnits(data))
+  let state = getState()
 
-    let data = await stationsAPI.getStationFullUnits(id);
-    await dispatch(setStationFullUnits(data));
-    let state = getState();
-    state.stations.currentStation.fullUnits.map(async (u) => {
-      let optimal = await stationsAPI.getStationOptimal(u.ID_Measured_Unit);
-      await dispatch(setCurrentStationOptimal(optimal));
-    });
+  const fullUnits = state.stations.currentStation.fullUnits
 
-    let measurements = await stationsAPI.getStationMeasurements(
-      DateFrom,
-      DateTo,
-      state.stations.currentStation.ID_Station,
-      state.stations.currentStation.fullUnits[0].ID_Measured_Unit
-    );
-    await dispatch(setMeasurements(measurements));
-    state = getState();
-    await dispatch(
-      setMeasurementsFormated(
-        formatChartObject(state.stations.currentStation.measurements)
-      )
-    );
-    await dispatch(
-      setSelectedMeasuredId(
-        state.stations.currentStation.fullUnits[0].ID_Measured_Unit
-      )
-    );
-    await dispatch(setUnitInfo());
-  };
+  await Promise.all(fullUnits.map(u => stationsAPI.getStationOptimal(u.ID_Measured_Unit))).then(res =>
+    res.map(optimal => dispatch(setCurrentStationOptimal(optimal)))
+  )
 
-export const setCurrentStationMeasurements =
-  (DateFrom, DateTo, ID_Measured_Unit) => async (dispatch, getState) => {
-    let state = getState();
-    let measurements = await stationsAPI.getStationMeasurements(
-      DateFrom,
-      DateTo,
-      state.stations.currentStation.ID_Station,
-      ID_Measured_Unit
-    );
-    await dispatch(setMeasurements(measurements));
-    state = getState();
-    dispatch(
-      setMeasurementsFormated(
-        formatChartObject(state.stations.currentStation.measurements)
-      )
-    );
+  await dispatch(setSelectedMeasuredId(state.stations.currentStation.fullUnits[0].ID_Measured_Unit))
+  await dispatch(setUnitInfo())
+}
 
-    dispatch(setLoading(false));
-  };
+export const setCurrentStationMeasurements = (DateFrom, DateTo, ID_Measured_Unit) => async (dispatch, getState) => {
+  let state = getState()
+  let measurements = await stationsAPI.getStationMeasurements(
+    DateFrom,
+    DateTo,
+    state.stations.currentStation.ID_Station,
+    ID_Measured_Unit
+  )
+  await dispatch(setMeasurements(measurements))
+  state = getState()
+  dispatch(setMeasurementsFormated(formatChartObject(state.stations.currentStation.measurements)))
 
-export const updateFavorite =
-  (ID_Station, isFavorite) => async (dispatch, getState) => {
-    dispatch(setLoading(true));
-    const data = await stationsAPI.updateStatusFavorive(ID_Station, isFavorite);
-    dispatch(updateStations(data));
-    dispatch(setLoading(false));
-  };
+  dispatch(setLoading(false))
+}
+
+export const updateFavorite = (ID_Station, isFavorite) => async (dispatch, getState) => {
+  dispatch(setLoading(true))
+  const data = await stationsAPI.updateStatusFavorive(ID_Station, isFavorite)
+  dispatch(updateStations(data))
+  dispatch(setLoading(false))
+}
 
 // @SELECTORS
-export const selectAllStations = (state) => state.stations.allStations;
-export const selectPage = (state) => state.stations.page;
-export const selectCurrentPageIndex = (state) =>
-  state.stations.currentPageIndex;
-export const selectLoading = (state) => state.stations.loading;
-export const selectCurrentStation = (state) => state.stations.currentStation;
-export const selectSelectedUnitInfo = (state) =>
-  state.stations.currentStation.selectedUnitInfo;
-export const selectSelectedUnitInfoOptimal = (state) =>
-  state.stations.currentStation.selectedUnitInfoOptimal;
+export const selectAllStations = state => state.stations.allStations
+export const selectPage = state => state.stations.page
+export const selectCurrentPageIndex = state => state.stations.currentPageIndex
+export const selectLoading = state => state.stations.loading
+export const selectCurrentStation = state => state.stations.currentStation
+export const selectSelectedUnitInfo = state => state.stations.currentStation.selectedUnitInfo
+export const selectSelectedUnitInfoOptimal = state => state.stations.currentStation.selectedUnitInfoOptimal
 
-export default stationsSlice.reducer;
+export default stationsSlice.reducer

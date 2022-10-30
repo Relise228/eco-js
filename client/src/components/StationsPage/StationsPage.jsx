@@ -1,132 +1,141 @@
-import {Input, Select, Pagination, Checkbox} from 'antd';
+import React, { useCallback, useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useSearchParams } from "react-router-dom"
+import { Select, Pagination, Checkbox } from "antd"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons"
+import { debounce } from "lodash"
+import { getStations, selectAllStations, selectLoading, selectPage, setPage } from "../../redux/features/stationsSlice"
+import Loader from "../Loader/Loader"
+import Station from "./Station/Station"
+import "./StationsPage.sass"
 
-import React, {useEffect, useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {
-  getStations,
-  selectAllStations,
-  selectLoading,
-  selectPage,
-  setCurrentPageIndex,
-  setPage,
-} from '../../redux/features/stationsSlice';
-import Loader from '../Loader/Loader';
-import Station from './Station/Station';
-import s from './StationsPage.module.sass';
+const { Option } = Select
 
-const {Search} = Input;
-const {Option} = Select;
+const StationsPage = React.memo(() => {
+  let [searchParams, setSearchParams] = useSearchParams({
+    order: "idUp",
+    onlyFav: false
+  })
+  const [searchString, setSearchString] = useState(searchParams.get("searchString") ?? "")
 
-function StationsPage() {
-  const [searchValue, setSearchValue] = useState('');
-  const [checked, setChecked] = useState(false);
-  const [sortValue, setSortValue] = useState('idUp');
-  let pageSize = 10;
-  const page = useSelector(selectPage);
+  const dispatch = useDispatch()
+  const stations = useSelector(selectAllStations)
+  const page = useSelector(selectPage)
+  const loading = useSelector(selectLoading)
 
-  const stations = useSelector(selectAllStations);
-  const loading = useSelector(selectLoading);
+  const onChangeOrder = useCallback(
+    value => {
+      searchParams.set("order", value)
+      setSearchParams(searchParams)
+    },
+    [setSearchParams, searchParams]
+  )
 
-  const dispatch = useDispatch();
+  const onChangeFavorite = useCallback(
+    e => {
+      searchParams.set("onlyFav", e.target.checked)
+      setSearchParams(searchParams)
+    },
+    [setSearchParams, searchParams]
+  )
 
-  useEffect(() => {
-    dispatch(setCurrentPageIndex(['1']));
-    let string = searchValue
-      ? `?searchString=${searchValue}&order=${sortValue}`
-      : `?order=${sortValue}`;
-    dispatch(getStations(string));
-  }, []);
-
-  useEffect(() => {
-    dispatch(setPage(1));
-  }, [stations]);
-
-  const onSearch = (value) => {
-    setSearchValue(value);
-    let string = searchValue
-      ? `?searchString=${value}&order=${sortValue}`
-      : `?order=${sortValue}`;
-    dispatch(getStations(string));
-  };
-
-  function handleChange(value) {
-    setSortValue(value);
-    let string = searchValue
-      ? `?searchString=${searchValue}&order=${sortValue}`
-      : `?order=${value}`;
-    dispatch(getStations(string));
+  const onChangePage = page => {
+    dispatch(setPage(page))
+    window.scrollTo(0, 0)
   }
 
-  function changeCheck(e) {
-    setChecked(e.target.checked);
-    let string = `?order=${sortValue}`;
-    if (searchValue) {
-      string += `&searchString=${searchValue}`;
-    } else if (e.target.checked === true) {
-      string += `&onlyFav=${e.target.checked}`;
-    }
-    dispatch(getStations(string));
+  const onChangeSearchString = e => {
+    setSearchString(e.target.value)
   }
 
-  let portionStation = stations?.slice(page * 10 - 10, page * pageSize);
+  const debouncedSetString = useCallback(
+    debounce(() => {
+      if (!searchString) {
+        searchParams.delete("searchString")
+      } else {
+        searchParams.set("searchString", searchString)
+      }
+      setSearchParams(searchParams)
+    }, 500),
+    [searchString]
+  )
+
   useEffect(() => {
-    if (stations !== undefined) {
-      portionStation = stations.slice(page * 10 - 10, page * pageSize);
-    }
-  }, [page]);
+    dispatch(setPage(1))
+  }, [searchParams])
 
-  const onChangePage = (page, pageSize) => {
-    dispatch(setPage(page));
-    window.scrollTo(0, 0);
-  };
+  useEffect(() => {
+    debouncedSetString()
 
-  if (loading) return <Loader />;
-  // d
+    return () => debouncedSetString.cancel()
+  }, [debouncedSetString])
+
+  useEffect(() => {
+    dispatch(getStations(`?${searchParams.toString()}`))
+  }, [searchParams])
+
   return (
-    <div className={s.stations}>
-      <div className={s.funcButtons}>
-        <div className={s.searchWrapper}>
-          <Search
-            placeholder='Search stations by name'
-            onSearch={onSearch}
-            className={s.search}
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.currentTarget.value)}
+    <div className="container-xxl">
+      <div className="row gy-4 stations-nav align-items-center gx-2">
+        <div className="col-md-7 col-12 position-relative">
+          <input
+            type="text"
+            className="form-control stations-search"
+            id="search"
+            placeholder="Type station name ..."
+            value={searchString}
+            onChange={onChangeSearchString}
           />
+          <FontAwesomeIcon icon={faMagnifyingGlass} color="#8cc541" className="stations-search-icon" />
         </div>
-        <div>
-          <Checkbox checked={checked} onChange={changeCheck}>
-            Favorite
-          </Checkbox>
-        </div>
-        <div className={s.sortWrapper}>
-          Sort
-          <div>
-            <Select
-              defaultValue={sortValue}
-              style={{width: 120}}
-              onChange={handleChange}
-              className={s.select}
-            >
-              <Option value='idDown'>Own</Option>
-              <Option value='idUp'>Save EcoBot</Option>
-            </Select>
+        <div className="col-md-5 col-12 ps-md-4">
+          <div className="row justify-content-lg-end justify-content-center align-items-center">
+            <div className="col-6">
+              <div style={{ width: "fit-content" }} className="float-md-end float-start">
+                <Checkbox checked={searchParams.get("onlyFav") === "true"} onChange={onChangeFavorite}>
+                  Favorite
+                </Checkbox>
+              </div>
+            </div>
+            <div className="col-6">
+              <Select
+                className="float-md-end float-start"
+                style={{ width: "130px" }}
+                defaultValue={searchParams.get("order")}
+                onChange={onChangeOrder}
+              >
+                <Option value="idDown">Own</Option>
+                <Option value="idUp">Save EcoBot</Option>
+              </Select>
+            </div>
           </div>
         </div>
       </div>
-      <div className={s.stationsWrapper}>
-        {portionStation &&
-          portionStation.map((s) => <Station key={s.ID_Station} station={s} />)}
-        <Pagination
-          className={s.pagination}
-          defaultCurrent={page}
-          total={stations?.length}
-          onChange={onChangePage}
-          showSizeChanger={false}
-        />
+      <div className="row pb-5">
+        <div className="col-12">
+          {loading && !stations?.length ? (
+            <div style={{ width: "fit-content", marginTop: "20%" }} className="h-100 mx-auto">
+              <Loader />
+            </div>
+          ) : (
+            <div className="row mt-4 gy-4">
+              {stations?.slice(page === 1 ? 0 : (page - 1) * 10, page === 1 ? 10 : page * 10).map(station => (
+                <Station station={station} />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
+      {!loading && stations?.length ? (
+        <div className="row pb-5">
+          <div className="col-12 d-flex justify-content-center">
+            <Pagination current={page} total={stations?.length} onChange={onChangePage} showSizeChanger={false} />
+          </div>
+        </div>
+      ) : null}
     </div>
-  );
-}
+  )
+})
 
-export default StationsPage;
+export default StationsPage
