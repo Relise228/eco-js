@@ -19,7 +19,6 @@ import { Radio, Select } from "antd"
 import { Bar, BarChart, CartesianGrid, Rectangle, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import { getDateRange } from "../../util/util"
 import { useCallback } from "react"
-import { useTransition } from "react"
 import { ResponsivePie } from "@nivo/pie"
 
 const { Option } = Select
@@ -97,25 +96,23 @@ const StationPage = React.memo(({ match }) => {
   const measurementsByRange = useMemo(() => {
     const array = []
 
-    startTransition(() => {
-      station.measurementsFormated?.forEach((m, index) => {
-        if (index % frequency === 0 && index) {
-          const startIndex = index ? index - frequency : 0
-          let sum = 0
+    station.measurementsFormated?.forEach((m, index) => {
+      if (index % frequency === 0 && index) {
+        const startIndex = index ? index - frequency : 0
+        let sum = 0
 
-          for (let i = startIndex; i < index; i++) {
-            sum += station.measurementsFormated[i].value
-          }
+        for (let i = startIndex; i < index; i++) {
+          sum += station.measurementsFormated[i].value
+        }
 
-          array.push({
-            value: Math.round(sum / frequency),
-            date: station.measurementsFormated[index].date
-          })
-        }
-        if (!index) {
-          array.push(m)
-        }
-      })
+        array.push({
+          value: Math.round(sum / frequency),
+          date: station.measurementsFormated[index].date
+        })
+      }
+      if (!index) {
+        array.push(m)
+      }
     })
 
     setIsFormatting(false)
@@ -216,11 +213,7 @@ const StationPage = React.memo(({ match }) => {
                         className="station-page-units"
                         value={selectedMeasuredId}
                         // style={{ width: 120 }}
-                        onChange={id =>
-                          startTransition(() => {
-                            dispatch(setSelectedMeasuredId(id))
-                          })
-                        }
+                        onChange={id => dispatch(setSelectedMeasuredId(id))}
                       >
                         {station?.fullUnits?.map(u => (
                           <Option value={u.ID_Measured_Unit}>{u.Title}</Option>
