@@ -138,20 +138,22 @@ const StationPage = React.memo(({ match }) => {
     const minValue = Math.min(...allValues)
     const maxValue = Math.max(...allValues)
 
-    return [
-      {
-        id: "Max value",
-        label: "Max value",
-        value: maxValue,
-        color: minMaxColors[0]
-      },
-      {
-        id: "Min value",
-        label: "Min value",
-        value: minValue,
-        color: "#000"
-      }
-    ]
+    return station.measurementsFormated?.length
+      ? [
+          {
+            id: "Max value",
+            label: "Max value",
+            value: maxValue,
+            color: minMaxColors[0]
+          },
+          {
+            id: "Min value",
+            label: "Min value",
+            value: minValue,
+            color: "#000"
+          }
+        ]
+      : []
   }, [station.measurementsFormated])
 
   const averageValue = useMemo(() => {
@@ -273,7 +275,7 @@ const StationPage = React.memo(({ match }) => {
                       </div>
                     </div>
 
-                    {selectedUnitInfo?.length && minMaxData.length && (
+                    {selectedUnitInfo?.length && minMaxData.length ? (
                       <>
                         <div className="col-md-6 col-12">
                           <div className="station-page-chart">
@@ -341,7 +343,7 @@ const StationPage = React.memo(({ match }) => {
                           </div>
                         </div>
                       </>
-                    )}
+                    ) : null}
                   </>
                 ) : (
                   <div className="col-12">
