@@ -53,7 +53,6 @@ const StationPage = React.memo(({ match }) => {
   const [range, setRange] = useState(time[0].value)
 
   const [isFormatting, setIsFormatting] = useState(false)
-  const [isPending, startTransition] = useTransition()
 
   useEffect(() => {
     setIsFormatting(true)
