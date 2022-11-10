@@ -41,6 +41,7 @@ function MapPage() {
   useEffect(() => {
     dispatch(setCurrentPageIndex(["3"]))
   }, [])
+
   return (
     <div className={s.mapWrapper}>
       <MapContainer center={[50.44034956835362, 30.542987368886138]} zoom={6} scrollWheelZoom={true} className={s.map}>

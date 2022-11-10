@@ -17,7 +17,7 @@ router.post("/measurements", auth, async (req, res) => {
     var all = []
     request = new Request(
       `select * from Measurment
-                                where Time >= '${DateFrom}' and Time < '${DateTo}' and ID_Station = '${ID_Station}' and ID_Measured_Unit = ${ID_Measured_Unit} order by Time;`,
+                        where Time >= '${DateFrom}' and Time < '${DateTo}' and ID_Station = '${ID_Station}' and ID_Measured_Unit = ${ID_Measured_Unit} order by Time;`,
       function (err, rowCount, rows) {
         connection.close()
         if (err) {
