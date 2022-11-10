@@ -139,13 +139,13 @@ const StationPage = React.memo(({ match }) => {
           {
             id: "Max value",
             label: "Max value",
-            value: maxValue,
+            value: Math.round(maxValue),
             color: minMaxColors[0]
           },
           {
             id: "Min value",
             label: "Min value",
-            value: minValue,
+            value: Math.round(minValue),
             color: "#000"
           }
         ]
@@ -326,9 +326,7 @@ const StationPage = React.memo(({ match }) => {
                             <div className="row">
                               <div className="col-12 text-center">Average {selectedUnitInfo[0]?.Title} Value</div>
                               <div className="col-12 d-flex align-items-center justify-content-center station-page-avg">
-                                <h2 style={{ color: colors[averageIndexColor] ?? "#000" }}>{averageValue}</h2>
-
-                                {console.log(selectedUnitInfo)}
+                                <h2 style={{ color: colors[averageIndexColor] ?? "#000" }}>{Math.round(averageValue)}</h2>
                                 <span>{selectedUnitInfo[0].Unit}</span>
                               </div>
                             </div>
