@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom"
 import MapPage from "../MapPage/MapPage"
 import StationPage from "../StationPage/StationPage"
 import ComparePage from "../ComparePage/ComparePage"
+import Reports from "../Reports/Reports"
 
 function App() {
   const auth = useSelector(selectIsAuth)
@@ -37,6 +38,7 @@ function App() {
           <Route path="/stations/*" element={<StationsPage />} />
           <Route path="/station/:id" element={<StationPage />} />
           <Route path="/compare" element={<ComparePage />} />
+          <Route path="/reports" element={<Reports />} />
           <Route path="/map" element={<MapPage />} />
         </Routes>
       </main>
